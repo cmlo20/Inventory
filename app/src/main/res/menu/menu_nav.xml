@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Inventory Management">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_itemlist"
+                    android:icon="@drawable/baseline_view_list_black_24"
+                    android:title="@string/nav_itemlist" />
+                <item
+                    android:id="@+id/nav_additemtype"
+                    android:icon="@drawable/baseline_playlist_add_black_24"
+                    android:title="@string/nav_additemtype" />
+                <item
+                    android:id="@+id/nav_addcategory"
+                    android:icon="@drawable/baseline_playlist_add_black_24"
+                    android:title="@string/nav_addcategory" />
+                <item
+                    android:id="@+id/nav_scanitem"
+                    android:icon="@drawable/baseline_qr_code_scanner_black_24"
+                    android:title="@string/nav_scanitem" />
+                <item
+                    android:id="@+id/nav_stockcount"
+                    android:icon="@drawable/baseline_account_balance_black_24"
+                    android:title="@string/nav_stockcount" />
+            </group>
+        </menu>
+    </item>
+</menu>
