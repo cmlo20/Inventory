@@ -113,6 +113,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_edit_item:
                 Intent intent = new Intent(this, EditItemActivity.class);
+                intent.putExtra(ItemDetailActivity.EXTRA_ITEM_ID, itemId);
                 startActivity(intent);
                 return true;
             default:

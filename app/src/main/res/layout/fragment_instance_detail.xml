@@ -16,7 +16,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/item_location_header" />
-
         <TextView
             android:id="@+id/location"
             android:layout_width="wrap_content"
@@ -28,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/item_barcode_header" />
-
         <TextView
             android:id="@+id/barcode"
             android:layout_width="wrap_content"
@@ -39,8 +37,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/item_remarks_header" />
+            android:text="@string/item_rfid_header" />
+        <TextView
+            android:id="@+id/rfid_uii"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/item_remarks_header" />
         <TextView
             android:id="@+id/remarks"
             android:layout_width="wrap_content"

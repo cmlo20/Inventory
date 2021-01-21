@@ -1,2 +1,3 @@
+include ':DENSOScannerSDK'
 include ':app'
 rootProject.name = "LES Inventory"

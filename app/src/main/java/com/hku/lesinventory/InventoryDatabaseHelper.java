@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class InventoryDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "les_inventory";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     InventoryDatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -78,6 +78,10 @@ public class InventoryDatabaseHelper extends SQLiteOpenHelper {
             insertCategory(db, "Switcher");
             insertCategory(db, "Recorder");
             insertCategory(db, "Camera");
+        }
+
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE ITEMINSTANCE ADD COLUMN RFID_UII TEXT");
         }
     }
 }

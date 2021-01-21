@@ -31,4 +31,9 @@
     <string name="item_remarks_header">Remarks</string>
     <string name="scan_button">Scan Barcode</string>
     <string name="nav_addcategory">Add Category</string>
+    <string name="read_tag_header">RFID Tag UII</string>
+    <string name="waiting_for_connection">Waiting for Connection...</string>
+    <string name="read_tag">Read Tag</string>
+    <string name="rfid_reader_connected">Connected to: %1$s [%2$s]</string>
+    <string name="item_rfid_header">RFID UII:</string>
 </resources>

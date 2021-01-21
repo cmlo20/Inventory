@@ -29,7 +29,7 @@ public class InstanceDetailFragment extends Fragment {
         try {
             SQLiteDatabase db = inventoryDatabaseHelper.getReadableDatabase();
             Cursor cursor = db.query("ITEMINSTANCE",
-                    new String[] {"_id", "LOCATION", "BARCODE", "REMARKS"},
+                    new String[] {"_id", "LOCATION", "BARCODE", "RFID_UII", "REMARKS"},
                     "ITEM = ?",
                     new String[] {Integer.toString(itemId)},
                     null, null, null);
@@ -39,8 +39,8 @@ public class InstanceDetailFragment extends Fragment {
                     if (i == instanceNumber) {
                         int locationId = cursor.getInt(1);
                         Long barcodeNumber = cursor.getLong(2);
-                        String remarksText = cursor.getString(3);
-
+                        String rfidUII = cursor.getString(3);
+                        String remarksText = cursor.getString(4);
                         cursor = db.query("LOCATION",
                                 new String[] {"_id", "NAME"},
                                 "_id = ?",
@@ -50,12 +50,17 @@ public class InstanceDetailFragment extends Fragment {
 
                         TextView location = layout.findViewById(R.id.location);
                         TextView barcode = layout.findViewById(R.id.barcode);
+                        TextView rfid = layout.findViewById(R.id.rfid_uii);
                         TextView remarks = layout.findViewById(R.id.remarks);
                         location.setText(locationText);
                         if (barcodeNumber == 0)
                             barcode.setText("N/A");
                         else
                             barcode.setText(Long.toString(barcodeNumber));
+                        if (rfidUII.equals(""))
+                            rfid.setText("N/A");
+                        else
+                            rfid.setText(rfidUII);
                     } else if (!cursor.moveToNext()) {
                         break;
                     }
