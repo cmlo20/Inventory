@@ -76,7 +76,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 Bitmap image = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
 
                 // Populate views with data
-                ImageView photo = findViewById(R.id.item_image);
+                ImageView photo = findViewById(R.id.ib_item);
                 photo.setImageBitmap(image);
                 photo.setContentDescription(nameText);
             }

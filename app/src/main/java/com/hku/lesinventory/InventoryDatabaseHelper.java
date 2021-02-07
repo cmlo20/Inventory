@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class InventoryDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "les_inventory";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 2;
 
     InventoryDatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -23,65 +23,80 @@ public class InventoryDatabaseHelper extends SQLiteOpenHelper {
         updateMyDatabase(db, oldVersion, newVersion);
     }
 
+    private void updateMyDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        if (oldVersion < 1) {
+
+            db.execSQL("CREATE TABLE Category ("
+                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "Name TEXT UNIQUE);");
+
+            db.execSQL("CREATE TABLE Location ("
+                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "Name TEXT UNIQUE);");
+
+            db.execSQL("CREATE TABLE Brand ("
+                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "Name TEXT UNIQUE);");
+
+            db.execSQL("CREATE TABLE Item ("
+                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "Name TEXT UNIQUE, "
+                    + "Description TEXT, "
+                    + "Image BLOB, "
+                    + "Brand INTEGER NOT NULL, "
+                    + "Category INTEGER NOT NULL, "
+                    + "FOREIGN KEY(Brand) REFERENCES Brand(_id), "
+                    + "FOREIGN KEY(Category) REFERENCES Category(_id));");
+
+            db.execSQL("CREATE TABLE ItemInstance ("
+                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "Rfid_Uii TEXT UNIQUE, "
+                    + "Barcode TEXT UNIQUE, "
+                    + "Location INTEGER NOT NULL, "
+                    + "Item INTEGER NOT NULL, "
+                    + "FOREIGN KEY(Location) REFERENCES Location(_id),"
+                    + "FOREIGN KEY(Item) REFERENCES Item(_id));");
+        }
+
+        if (oldVersion < 2) {
+            insertSampleData(db);
+        }
+    }
+
+    private void insertSampleData(SQLiteDatabase db) {
+        insertBrand(db, "Behringer");
+        insertBrand(db, "Radial");
+        insertBrand(db, "Sennheiser");
+        insertBrand(db, "Shure");
+        insertBrand(db, "Soundcraft");
+
+        insertCategory(db, "Camera");
+        insertCategory(db, "DI Box");
+        insertCategory(db, "Interface");
+        insertCategory(db, "Mic");
+        insertCategory(db, "Mixer");
+        insertCategory(db, "Tool");
+
+        insertLocation(db, "CPD-2.74");
+        insertLocation(db, "CPD-2.76");
+    }
+
     private static void insertCategory(SQLiteDatabase db, String name) {
         ContentValues categoryValues = new ContentValues();
-        categoryValues.put("NAME", name);
-        db.insert("CATEGORY", null, categoryValues);
+        categoryValues.put("Name", name);
+        db.insert("Category", null, categoryValues);
     }
 
     private static void insertLocation(SQLiteDatabase db, String name) {
         ContentValues locationValues = new ContentValues();
-        locationValues.put("NAME", name);
-        db.insert("LOCATION", null, locationValues);
+        locationValues.put("Name", name);
+        db.insert("Location", null, locationValues);
     }
 
-    private void updateMyDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {   // New user
-
-            db.execSQL("CREATE TABLE CATEGORY ("
-                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "NAME TEXT UNIQUE);");
-
-            db.execSQL("CREATE TABLE LOCATION ("
-                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "NAME TEXT UNIQUE);");
-
-            db.execSQL("CREATE TABLE ITEM ("
-                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "NAME TEXT UNIQUE, "
-                    + "DESCRIPTION TEXT, "
-                    + "IMAGE BLOB, "
-                    + "CATEGORY INTEGER NOT NULL, "
-                    + "FOREIGN KEY(CATEGORY) REFERENCES CATEGORY(_id));");
-
-            db.execSQL("CREATE TABLE ITEMINSTANCE ("
-                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "BARCODE INTEGER UNIQUE, "
-                    + "REMARKS TEXT, "
-                    + "LOCATION INTEGER NOT NULL, "
-                    + "ITEM INTEGER NOT NULL, "
-                    + "FOREIGN KEY(LOCATION) REFERENCES LOCATION(_id),"
-                    + "FOREIGN KEY(ITEM) REFERENCES ITEM(_id));");
-
-            insertLocation(db, "CPD-2.74");
-            insertLocation(db, "CPD-2.76");
-
-            insertCategory(db, "Extender");
-            insertCategory(db, "DI box");
-            insertCategory(db, "Mic");
-            insertCategory(db, "Interface");
-            insertCategory(db, "Mixer");
-            insertCategory(db, "Amp");
-            insertCategory(db, "AVIP/EDID");
-            insertCategory(db, "Scaler/Converter");
-            insertCategory(db, "Tool");
-            insertCategory(db, "Switcher");
-            insertCategory(db, "Recorder");
-            insertCategory(db, "Camera");
-        }
-
-        if (oldVersion < 3) {
-            db.execSQL("ALTER TABLE ITEMINSTANCE ADD COLUMN RFID_UII TEXT");
-        }
+    private static void insertBrand(SQLiteDatabase db, String name) {
+        ContentValues brandValues = new ContentValues();
+        brandValues.put("Name", name);
+        db.insert("Brand", null, brandValues);
     }
 }

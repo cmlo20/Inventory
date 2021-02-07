@@ -9,7 +9,6 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
@@ -20,28 +19,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.NewInstanceActivity"></activity>
+        <activity
+            android:name=".ui.NewItemActivity"
+            android:label="@string/add_item_title"
+            android:parentActivityName=".ui.InventoryActivity" />
         <activity
             android:name=".AddCategoryActivity"
-            android:parentActivityName=".ItemListActivity"/>
+            android:parentActivityName=".ui.InventoryActivity" />
         <activity
             android:name=".CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".AddInstanceActivity"
             android:label="@string/add_instance_title"
-            android:parentActivityName=".ItemListActivity" />
+            android:parentActivityName=".ui.InventoryActivity" />
         <activity android:name=".EditItemActivity" />
         <activity
             android:name=".ItemDetailActivity"
-            android:parentActivityName=".ItemListActivity" />
+            android:parentActivityName=".ui.InventoryActivity" />
         <activity
             android:name=".AddItemTypeActivity"
             android:label="@string/add_item_type_title"
-            android:parentActivityName=".ItemListActivity" />
-        <activity android:name=".ItemListActivity">
+            android:parentActivityName=".ui.InventoryActivity" />
+        <activity android:name=".ui.InventoryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

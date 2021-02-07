@@ -1,39 +1,61 @@
 <resources>
     <string name="app_name">LES Inventory</string>
+
+    <!--    Navigation drawer menu items    -->
+    <string name="nav_open_drawer">Open Navigation Drawer</string>
+    <string name="nav_close_drawer">Close Navigation Drawer</string>
+    <string name="nav_inventory">Inventory</string>
+    <string name="nav_rfidscan">RFID Scan</string>
+    <string name="nav_stocktaking">Stocktaking</string>
+
+    <!--    Toolbar menu items  -->
+    <string name="add_item_title">New Item</string>
+    <string name="save">Save</string>
+
+    <!--    Hints for item attributes   -->
+    <string name="hint_item_image">Item Image</string>
+    <string name="hint_item_name">Item name</string>
+    <string name="hint_item_description">Item description</string>
+    <string name="hint_wait_for_connection">Waiting for Connection...</string>
+
+    <!--    Headers for item attributes  -->
+    <string name="header_name">Name</string>
+    <string name="header_description">Description</string>
+    <string name="header_brand">Brand</string>
+    <string name="header_category">Category</string>
+    <string name="header_rfid_tag">RFID Tag</string>
+    <string name="header_location">Location</string>
+    <string name="header_quantity">Quantity: %d</string>
+
+    <!--    Warning messages for validating form input  -->
+    <string name="warn_empty_item_name">Item name cannot be empty</string>
+    <string name="warn_duplicate_item_name">Item name already exists</string>
+
+    <!--    Content description for view elements   -->
+    <string name="cd_item_list">Item List</string>
+    <string name="cd_item_image">Item Image</string>
+
+
     <string name="add_item_type_title">New Item Type</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="checked_in">Checked-in</string>
     <string name="edit_item_title">Edit Item</string>
-    <string name="nav_itemlist">Item List</string>
-    <string name="nav_scanitem">Scan Item</string>
-    <string name="nav_stockcount">Stock Count</string>
-    <string name="nav_close_drawer">Close Navigation Drawer</string>
-    <string name="nav_open_drawer">Open Navigation Drawer</string>
-    <string name="add_item_name_hint">Item name</string>
-    <string name="add_item_description_hint">Item description</string>
     <string name="add_item_location_hint">Item location</string>
     <string name="add_item_barcode_hint">Barcode number</string>
     <string name="add_item_category_hint">Item category</string>
-    <string name="save">Save</string>
     <string name="item_image">Item image</string>
-    <string name="item_name_header">Name: </string>
-    <string name="item_description_header">Description: </string>
     <string name="item_category_header">Category: </string>
     <string name="item_location_header">Location: </string>
     <string name="item_barcode_header">Barcode: </string>
     <string name="add_item_quantity_hint">Item quantity</string>
     <string name="item_quantity_header">Quantity: </string>
-    <string name="add_item_image_hint">Add image</string>
-    <string name="nav_additemtype">Add Item Type</string>
     <string name="select_item_header">Item to add</string>
     <string name="add_instance_title">Add New Item</string>
     <string name="item_remarks_header">Remarks</string>
     <string name="scan_button">Scan Barcode</string>
-    <string name="nav_addcategory">Add Category</string>
     <string name="read_tag_header">RFID Tag UII</string>
     <string name="waiting_for_connection">Waiting for Connection...</string>
     <string name="read_tag">Read Tag</string>
     <string name="rfid_reader_connected">Connected to: %1$s [%2$s]</string>
     <string name="item_rfid_header">RFID UII:</string>
+
 </resources>

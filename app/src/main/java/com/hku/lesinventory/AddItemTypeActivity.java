@@ -126,7 +126,7 @@ public class AddItemTypeActivity extends AppCompatActivity {
             int photoW = bmOptions.outWidth;
             int photoH = bmOptions.outHeight;
 
-            ImageButton itemImage = findViewById(R.id.item_image);
+            ImageButton itemImage = findViewById(R.id.ib_item);
             int targetW = itemImage.getWidth();
             int targetH = itemImage.getHeight();
             int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
@@ -166,10 +166,10 @@ public class AddItemTypeActivity extends AppCompatActivity {
 
 
     public void onClickSave(View view) {
-        EditText name = findViewById(R.id.item_name);
-        EditText description = findViewById(R.id.item_description);
+        EditText name = findViewById(R.id.et_name);
+        EditText description = findViewById(R.id.et_description);
         Spinner category = findViewById(R.id.item_category);
-        ImageButton imageButton = findViewById(R.id.item_image);
+        ImageButton imageButton = findViewById(R.id.ib_item);
 
         ContentValues itemValues = new ContentValues();
         itemValues.put("NAME", name.getText().toString());
