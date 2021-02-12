@@ -80,7 +80,7 @@ public class AddItemTypeActivity extends AppCompatActivity {
         db.close();
     }
 
-    /* Create a file for the photo */
+    /* Create a file for the item photo */
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -126,7 +126,7 @@ public class AddItemTypeActivity extends AppCompatActivity {
             int photoW = bmOptions.outWidth;
             int photoH = bmOptions.outHeight;
 
-            ImageButton itemImage = findViewById(R.id.ib_item);
+            ImageButton itemImage = findViewById(R.id.item_image);
             int targetW = itemImage.getWidth();
             int targetH = itemImage.getHeight();
             int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
@@ -169,7 +169,7 @@ public class AddItemTypeActivity extends AppCompatActivity {
         EditText name = findViewById(R.id.et_name);
         EditText description = findViewById(R.id.et_description);
         Spinner category = findViewById(R.id.item_category);
-        ImageButton imageButton = findViewById(R.id.ib_item);
+        ImageButton imageButton = findViewById(R.id.item_image);
 
         ContentValues itemValues = new ContentValues();
         itemValues.put("NAME", name.getText().toString());

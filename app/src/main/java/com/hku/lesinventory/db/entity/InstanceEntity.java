@@ -1,27 +1,32 @@
 package com.hku.lesinventory.db.entity;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.hku.lesinventory.model.ItemInstance;
+import com.hku.lesinventory.model.Instance;
 
-@Entity(tableName = "itemInstances",
+@Entity(tableName = "instances",
         foreignKeys = {
                 @ForeignKey(entity = LocationEntity.class,
                         parentColumns = "id",
                         childColumns = "locationId",
+                        onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = ItemEntity.class,
+                        parentColumns = "id",
+                        childColumns = "itemId",
                         onDelete = ForeignKey.CASCADE)},
         indices = {
                 @Index(value = {"rfidUii", "barcode"}, unique = true),
-                @Index(value = "locationId")
+                @Index(value = "locationId"),
+                @Index(value = "itemId")
         })
-public class ItemInstanceEntity implements ItemInstance {
+public class InstanceEntity implements Instance {
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private int itemId;
     private int locationId;
     private String rfidUii;
     private String barcode;
@@ -30,6 +35,11 @@ public class ItemInstanceEntity implements ItemInstance {
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
+
+    @Override
+    public int getItemId() { return itemId; }
+
+    public void setItemId(int itemId) { this.itemId = itemId; }
 
     @Override
     public int getLocationId() { return locationId; }
@@ -46,15 +56,15 @@ public class ItemInstanceEntity implements ItemInstance {
 
     public void setBarcode(String barcode) { this.barcode = barcode; }
 
-    public ItemInstanceEntity() {
+    public InstanceEntity() {
 
     }
 
     @Ignore
-    public ItemInstanceEntity(int id, int locationId, String rfidUii, String barcode) {
-        this.id = id;
+    public InstanceEntity(int itemId, int locationId, String rfidUii) {
+        this.itemId = itemId;
         this.locationId = locationId;
         this.rfidUii = rfidUii;
-        this.barcode = barcode;
+//        this.barcode = barcode;
     }
 }

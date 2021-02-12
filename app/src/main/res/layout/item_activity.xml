@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="isLoading"
+                  type="boolean" />
+        <variable name="itemViewModel"
+                  type="com.hku.lesinventory.viewmodel.ItemViewModel"/>
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.ItemActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:contentScrim="@color/colorPrimary">
+
+                <ImageView
+                    android:id="@+id/item_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_image_height"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/cd_item_image"
+                    app:layout_collapseMode="parallax" />
+
+                <include
+                    layout="@layout/toolbar_main"
+                    android:id="@+id/toolbar" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <ProgressBar
+                android:id="@+id/loading_indicator"
+                android:layout_width="@dimen/loading_indicator_size"
+                android:layout_height="@dimen/loading_indicator_size"
+                android:layout_gravity="center"
+                app:visibleGone="@{isLoading}" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/item_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/view_horizontal_margin_medium"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium"
+                    android:text="@{itemViewModel.itemBrand.name}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Brand" />
+
+                <TextView
+                    android:id="@+id/item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/text_margin_small"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium"
+                    android:text="@{itemViewModel.item.name}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintStart_toEndOf="@+id/item_brand"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Item name" />
+
+                <TextView
+                    android:id="@+id/item_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/view_horizontal_margin_large"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium"
+                    android:text="@{itemViewModel.item.description}"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/item_brand"
+                    tools:text="Description" />
+
+                <LinearLayout
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium"
+                    android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
+                    app:layout_constraintTop_toBottomOf="@+id/item_description">
+
+                    <ImageButton
+                        android:id="@+id/instance_search_button"
+                        android:layout_width="@dimen/image_button_size"
+                        android:layout_height="@dimen/image_button_size"
+                        android:contentDescription="@string/cd_search_instances"
+                        android:src="@drawable/baseline_search_black_24" />
+
+                    <EditText
+                        android:id="@+id/instance_search_box"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_search"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    <TextView
+                        android:id="@+id/item_quantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/view_horizontal_margin_medium"
+                        android:text="@{@string/header_quantity(itemViewModel.item.quantity)}"
+                        tools:text="Quantity: #" />
+
+                    <ImageButton
+                        android:id="@+id/add_instance_button"
+                        android:layout_width="@dimen/image_button_size"
+                        android:layout_height="@dimen/image_button_size"
+                        android:contentDescription="@string/cd_new_instance"
+                        android:src="@drawable/baseline_playlist_add_black_24" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/instance_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/cd_instance_list"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/search_bar" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

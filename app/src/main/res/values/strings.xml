@@ -9,7 +9,8 @@
     <string name="nav_stocktaking">Stocktaking</string>
 
     <!--    Toolbar menu items  -->
-    <string name="add_item_title">New Item</string>
+    <string name="title_new_item">New Item</string>
+    <string name="title_new_instance">New Instance</string>
     <string name="save">Save</string>
 
     <!--    Hints for item attributes   -->
@@ -17,6 +18,7 @@
     <string name="hint_item_name">Item name</string>
     <string name="hint_item_description">Item description</string>
     <string name="hint_wait_for_connection">Waiting for Connection...</string>
+    <string name="hint_search">Search</string>
 
     <!--    Headers for item attributes  -->
     <string name="header_name">Name</string>
@@ -26,15 +28,25 @@
     <string name="header_rfid_tag">RFID Tag</string>
     <string name="header_location">Location</string>
     <string name="header_quantity">Quantity: %d</string>
+    <string name="header_last_check_in">Last check-in</string>
 
-    <!--    Warning messages for validating form input  -->
+    <!--    Messages  -->
     <string name="warn_empty_item_name">Item name cannot be empty</string>
     <string name="warn_duplicate_item_name">Item name already exists</string>
+    <string name="warn_empty_rfid">RFID tag cannot be empty</string>
+    <string name="warn_duplicate_rfid">RFID tag already exists</string>
+    <string name="toast_item_saved">Item Saved</string>
 
     <!--    Content description for view elements   -->
     <string name="cd_item_list">Item List</string>
     <string name="cd_item_image">Item Image</string>
-
+    <string name="cd_search_instances">Search Instances</string>
+    <string name="cd_instance_list">Instance List</string>
+    <string name="cd_new_instance">Add New Instance</string>
+    <string name="cd_rfid_tag">RFID tag</string>
+    <string name="cd_location">Location</string>
+    <string name="cd_last_check_in">Check-in time</string>
+    <string name="cd_barcode">Barcode</string>
 
     <string name="add_item_type_title">New Item Type</string>
     <string name="checked_in">Checked-in</string>
@@ -57,5 +69,6 @@
     <string name="read_tag">Read Tag</string>
     <string name="rfid_reader_connected">Connected to: %1$s [%2$s]</string>
     <string name="item_rfid_header">RFID UII:</string>
+    <string name="error_camera_unavailable">Camera not available</string>
 
 </resources>

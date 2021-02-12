@@ -76,7 +76,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 Bitmap image = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
 
                 // Populate views with data
-                ImageView photo = findViewById(R.id.ib_item);
+                ImageView photo = findViewById(R.id.item_image);
                 photo.setImageBitmap(image);
                 photo.setContentDescription(nameText);
             }
@@ -104,7 +104,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_item_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_item, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -146,8 +146,7 @@ public class InventoryActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             List<CategoryEntity> categories = inventoryViewModel.getCategories().getValue();
             int categoryId = categories.get(position).getId();
-            CategoryFragment categoryFragment = new CategoryFragment();
-            categoryFragment.setCategory(categoryId);
+            CategoryFragment categoryFragment = new CategoryFragment(categoryId);
             return categoryFragment;
         }
 

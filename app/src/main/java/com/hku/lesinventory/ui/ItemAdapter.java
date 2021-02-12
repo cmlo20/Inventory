@@ -1,25 +1,27 @@
 package com.hku.lesinventory.ui;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hku.lesinventory.R;
-import com.hku.lesinventory.databinding.InventoryItemBinding;
-import com.hku.lesinventory.db.entity.ItemEntity;
+import com.hku.lesinventory.databinding.InventoryListItemBinding;
 import com.hku.lesinventory.model.Brand;
 import com.hku.lesinventory.model.Item;
+import com.hku.lesinventory.viewmodel.ItemViewModel;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder>{
@@ -41,6 +43,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             notifyItemRangeInserted(0, itemList.size());
         } else {
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+
                 @Override
                 public int getOldListSize() {
                     return mItemList.size();
@@ -113,8 +116,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     @NonNull
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        InventoryItemBinding binding = DataBindingUtil.inflate(
-                LayoutInflater.from(parent.getContext()), R.layout.inventory_item, parent, false);
+        InventoryListItemBinding binding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()), R.layout.inventory_list_item, parent, false);
         binding.setCallback(mItemClickCallback);
         return new ItemViewHolder(binding);
     }
@@ -122,12 +125,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = mItemList.get(position);
-        holder.binding.setItem(item);
+        holder.binding.setItem(item);   // bind item data
+
+        Context context = holder.binding.getRoot().getContext();
+        Uri imageUri = Uri.parse(item.getImageUriString());
+        try {
+            Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+            holder.binding.itemImage.setImageBitmap(imageBitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         int itemBrandId = item.getBrandId();
         for (Brand brand : mBrandList) {
             if (brand.getId() == itemBrandId) {
-                holder.binding.setBrand(brand);
+                holder.binding.setBrand(brand);     // bind brand data
             }
         }
         holder.binding.executePendingBindings();
@@ -142,9 +154,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        final InventoryItemBinding binding;
+        final InventoryListItemBinding binding;
 
-        public ItemViewHolder(InventoryItemBinding binding) {
+        public ItemViewHolder(InventoryListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

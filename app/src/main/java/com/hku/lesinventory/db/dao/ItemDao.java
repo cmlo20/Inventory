@@ -8,6 +8,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.hku.lesinventory.db.entity.BrandEntity;
+import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.db.entity.ItemEntity;
 
 import java.util.List;
@@ -31,7 +33,18 @@ public interface ItemDao {
     void insert(ItemEntity item);
 
     @Query("SELECT * FROM items WHERE id = :itemId")
-    LiveData<List<ItemEntity>> getItemById(int itemId);
+    LiveData<ItemEntity> getItemById(int itemId);
+
+    @Query("SELECT * FROM brands WHERE id IN " +
+            "(SELECT brandId FROM items WHERE id = :itemId)")
+    LiveData<BrandEntity> getItemBrand(int itemId);
+
+    @Query("SELECT * FROM categories WHERE id IN " +
+            "(SELECT categoryId FROM items WHERE id = :itemId)")
+    LiveData<CategoryEntity> getItemCategory(int itemId);
+
+    @Query("SELECT imageUriString FROM items WHERE id = :itemId")
+    LiveData<String> getItemImage(int itemId);
 
     @Update
     void update(ItemEntity item);

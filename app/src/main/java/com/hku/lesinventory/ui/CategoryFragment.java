@@ -1,11 +1,12 @@
 package com.hku.lesinventory.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -13,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.CategoryFragmentBinding;
 import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.ItemEntity;
@@ -28,11 +28,15 @@ public class CategoryFragment extends Fragment {
 
     public static final String TAG = CategoryFragment.class.getName();
 
-    private int mCategoryId;
+    private final int mCategoryId;
 
     private CategoryFragmentBinding mBinding;
 
     private ItemAdapter mItemAdapter;
+
+    public CategoryFragment(int categoryId) {
+        this.mCategoryId = categoryId;
+    }
 
     @Nullable
     @Override
@@ -74,7 +78,6 @@ public class CategoryFragment extends Fragment {
         });
     }
 
-
     @Override
     public void onDestroyView() {
         mBinding = null;
@@ -83,10 +86,10 @@ public class CategoryFragment extends Fragment {
     }
 
     private final ItemClickCallback mItemClickCallback = item -> {
-
+        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+            Intent intent = new Intent(getActivity(), ItemActivity.class);
+            intent.putExtra(ItemActivity.KEY_ITEM_ID, item.getId());
+            startActivity(intent);
+        }
     };
-
-    public void setCategory(int categoryId) {
-        this.mCategoryId = categoryId;
-    }
 }

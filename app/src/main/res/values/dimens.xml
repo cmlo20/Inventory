@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    List items      -->
     <dimen name="list_item_height">120dp</dimen>
-    <dimen name="list_item_horizontal_margin">8dp</dimen>
     <dimen name="list_item_image_width">120dp</dimen>
-    <dimen name="list_item_text_margin">4dp</dimen>
+    <dimen name="list_instance_height">120dp</dimen>
+    <dimen name="list_instance_text_margin">8dp</dimen>
+    <dimen name="list_instance_icon_size">24dp</dimen>
+    <dimen name="list_instance_icon_margin">4dp</dimen>
+
+    <!--    Form items      -->
+    <dimen name="form_horizontal_margin">16dp</dimen>
+    <dimen name="form_header_vertical_margin">16dp</dimen>
+    <dimen name="form_header_vertical_margin_large">24dp</dimen>
+    <dimen name="form_spinner_vertical_margin">8dp</dimen>
+
+    <!--    General     -->
+    <dimen name="view_horizontal_margin_medium">12dp</dimen>
+    <dimen name="view_horizontal_margin_large">16dp</dimen>
+    <dimen name="view_vertical_margin_medium">8dp</dimen>
+    <dimen name="view_vertical_margin_large">16dp</dimen>
+    <dimen name="text_margin_small">4dp</dimen>
+    <dimen name="text_margin_large">16dp</dimen>
+
+    <!--    General View components     -->
+    <dimen name="loading_indicator_size">42dp</dimen>
+    <dimen name="image_button_size">42dp</dimen>
+    <dimen name="item_image_height">300dp</dimen>
+
 </resources>

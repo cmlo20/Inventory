@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.hku.lesinventory.InventoryApp;
 import com.hku.lesinventory.db.InventoryRepository;
 import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.CategoryEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class InventoryViewModel extends AndroidViewModel {
 
-    private InventoryRepository mRepo;
+    private InventoryRepository mRepository;
 
     private final LiveData<List<ItemEntity>> mItems;
     private final LiveData<List<String>> mItemNames;
@@ -26,19 +27,23 @@ public class InventoryViewModel extends AndroidViewModel {
 
     public InventoryViewModel(@NonNull Application application) {
         super(application);
-        mRepo = new InventoryRepository(application);
-        mItems = mRepo.getAllItems();
-        mItemNames = mRepo.getAllItemNames();
-        mCategories = mRepo.getAllCategories();
-        mCategoryNames = mRepo.getAllCategoryNames();
-        mBrands = mRepo.getAllBrands();
-        mBrandNames = mRepo.getAllBrandNames();
+        mRepository = ((InventoryApp) application).getRepository();
+
+        mItems = mRepository.loadAllItems();
+        mItemNames = mRepository.loadAllItemNames();
+        mCategories = mRepository.loadAllCategories();
+        mCategoryNames = mRepository.loadAllCategoryNames();
+        mBrands = mRepository.loadAllBrands();
+        mBrandNames = mRepository.loadAllBrandNames();
     }
 
+    /**
+     * Expose LiveData query so the UI can observe it
+     */
     public LiveData<List<ItemEntity>> getItems() { return mItems; }
 
     public LiveData<List<ItemEntity>> getItemsByCategory(int categoryId) {
-        return mRepo.getItemsByCategory(categoryId);
+        return mRepository.loadItemsByCategory(categoryId);
     }
 
     public LiveData<List<String>> getItemNames() { return mItemNames; }
@@ -47,13 +52,14 @@ public class InventoryViewModel extends AndroidViewModel {
 
     public LiveData<List<String>> getCategoryNames() { return mCategoryNames; }
 
-    public int getCategoryId(String categoryName) { return mRepo.getCategoryId(categoryName); }
+    public int getCategoryId(String categoryName) { return mRepository.getCategoryId(categoryName); }
 
     public LiveData<List<BrandEntity>> getBrands() { return mBrands; }
 
     public LiveData<List<String>> getBrandNames() { return mBrandNames; }
 
-    public int getBrandId(String brandName) { return mRepo.getBrandId(brandName); }
+    public int getBrandId(String brandName) { return mRepository.getBrandId(brandName); }
 
-    public void insertItem(ItemEntity item) { mRepo.insert(item); }
+
+    public void insertItem(ItemEntity item) { mRepository.insert(item); }
 }

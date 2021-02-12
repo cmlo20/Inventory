@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="instance"
+                  type="com.hku.lesinventory.model.Instance"/>
+        <variable name="location"
+                  type="com.hku.lesinventory.model.Location"/>
+        <variable name="callback"
+                  type="com.hku.lesinventory.ui.InstanceClickCallback"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> callback.onClick(instance)}"
+        android:layout_marginStart="@dimen/view_horizontal_margin_medium"
+        android:layout_marginEnd="@dimen/view_horizontal_margin_medium"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardCornerRadius="@dimen/cardview_default_radius">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_instance_icon_margin"
+                android:layout_marginTop="@dimen/list_instance_icon_margin"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="@dimen/list_instance_icon_size"
+                    android:layout_height="@dimen/list_instance_icon_size"
+                    android:contentDescription="@string/cd_rfid_tag"
+                    android:src="@drawable/round_fingerprint_black_24" />
+
+                <TextView
+                    android:id="@+id/instance_rfid_uii"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_instance_text_margin"
+                    android:text="@{instance.rfidUii}"
+                    tools:text="301839232ABCD02" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_instance_icon_margin"
+                android:layout_marginTop="@dimen/list_instance_icon_margin"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <ImageView
+                    android:layout_width="@dimen/list_instance_icon_size"
+                    android:layout_height="@dimen/list_instance_icon_size"
+                    android:contentDescription="@string/cd_barcode"
+                    android:src="@drawable/baseline_qr_code_scanner_black_24" />
+
+                <TextView
+                    android:id="@+id/instance_barcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_instance_text_margin"
+                    android:text="@{instance.barcode}"
+                    tools:text="12374992011" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_instance_icon_margin"
+                android:layout_marginTop="@dimen/list_instance_icon_margin"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+                <ImageView
+                    android:layout_width="@dimen/list_instance_icon_size"
+                    android:layout_height="@dimen/list_instance_icon_size"
+                    android:contentDescription="@string/cd_location"
+                    android:src="@drawable/round_location_on_black_24" />
+
+                <TextView
+                    android:id="@+id/instance_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_instance_text_margin"
+                    android:text="@{location.name}"
+                    tools:text="CPD-2.74" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_instance_icon_margin"
+                android:layout_marginTop="@dimen/list_instance_icon_margin"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+                <ImageView
+                    android:layout_width="@dimen/list_instance_icon_size"
+                    android:layout_height="@dimen/list_instance_icon_size"
+                    android:contentDescription="@string/cd_last_check_in"
+                    android:src="@drawable/baseline_check_circle_outline_24" />
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/instance_check_in_date"-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginTop="@dimen/list_instance_text_margin"-->
+                <!--                android:layout_marginEnd="@dimen/list_instance_text_margin"-->
+                <!--                android:text="@{instance.checkInDate}"-->
+                <!--                tools:text="2020-01-01" />-->
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

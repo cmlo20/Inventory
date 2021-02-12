@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="@dimen/loading_indicator_size"
+        android:layout_height="@dimen/loading_indicator_size"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
-        android:contentDescription="@string/cd_item_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/cd_item_list"
         android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+
 </FrameLayout>

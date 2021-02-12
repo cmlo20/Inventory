@@ -63,7 +63,7 @@ public class AddInstanceFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View layout = inflater.inflate(R.layout.fragment_add_instance, container, false);
-        FloatingActionButton saveButton = layout.findViewById(R.id.save_button);
+        FloatingActionButton saveButton = layout.findViewById(R.id.rfid_scan_button);
         ImageButton scanButton = layout.findViewById(R.id.scan_button);
         editTextReadUII = layout.findViewById(R.id.item_rfid_uii);
         readTagButton = layout.findViewById(R.id.readTag_button);
@@ -90,7 +90,7 @@ public class AddInstanceFragment extends Fragment
                 // Populate views with data
                 TextView name = layout.findViewById(R.id.et_name);
                 TextView description = layout.findViewById(R.id.et_description);
-                ImageView photo = layout.findViewById(R.id.ib_item);
+                ImageView photo = layout.findViewById(R.id.item_image);
                 name.setText(nameText);
                 description.setText(descriptionText);
                 photo.setImageBitmap(image);
@@ -223,7 +223,7 @@ public class AddInstanceFragment extends Fragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.save_button:
+            case R.id.rfid_scan_button:
                 onClickSave(v);
                 break;
             case R.id.scan_button:

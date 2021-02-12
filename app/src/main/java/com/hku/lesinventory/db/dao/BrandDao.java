@@ -24,6 +24,9 @@ public interface BrandDao {
     @Query("SELECT name FROM brands")
     LiveData<List<String>> getAllBrandNames();
 
+    @Query("SELECT name FROM brands WHERE id = :brandId")
+    LiveData<String> getBrandName(int brandId);
+
     @Query("SELECT id FROM brands WHERE name = :brandName")
     int getIdByName(String brandName);
 

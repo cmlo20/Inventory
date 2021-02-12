@@ -74,11 +74,12 @@ public class ItemEntity implements Item {
     }
 
     @Ignore
-    public ItemEntity(int categoryId, int brandId, String name, String description) {
+    public ItemEntity(int categoryId, int brandId, String name, String description, String imageUriString) {
         this.categoryId = categoryId;
         this.brandId = brandId;
         this.name = name;
         this.description = description;
+        this.imageUriString = imageUriString;
     }
 }
 

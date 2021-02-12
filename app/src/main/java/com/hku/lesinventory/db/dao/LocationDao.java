@@ -16,16 +16,22 @@ import java.util.List;
 public interface LocationDao {
 
     @Query("SELECT * FROM locations")
-    LiveData<List<LocationEntity>> loadAllLocations();
+    LiveData<List<LocationEntity>> getAllLocations();
+
+    @Query("SELECT * FROM locations WHERE id = :locationId")
+    LiveData<LocationEntity> getLocation(int locationId);
+
+    @Query("SELECT name FROM locations")
+    LiveData<List<String>> getAllLocationNames();
+
+    @Query("SELECT id FROM locations WHERE name = :locationName")
+    int getIdByName(String locationName);
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     void insertAll(List<LocationEntity> locations);
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     void insert(LocationEntity location);
-
-    @Query("SELECT * FROM locations WHERE id = :locationId")
-    LiveData<List<LocationEntity>> loadLocation(int locationId);
 
     @Update
     void update(LocationEntity location);

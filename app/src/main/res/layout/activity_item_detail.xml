@@ -22,7 +22,7 @@
             app:contentScrim="?attr/colorPrimary">
 
             <ImageView
-                android:id="@+id/ib_item"
+                android:id="@+id/item_image"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:scaleType="fitCenter"

@@ -1,7 +1,8 @@
 package com.hku.lesinventory.model;
 
-public interface ItemInstance {
+public interface Instance {
     int getId();
+    int getItemId();
     int getLocationId();
     String getRfidUii();
     String getBarcode();

@@ -2,6 +2,7 @@ package com.hku.lesinventory.db.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -28,6 +29,7 @@ public class LocationEntity implements Location {
 
     }
 
+    @Ignore
     public LocationEntity(String name) {
         this.name = name;
     }
