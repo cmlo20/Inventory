@@ -11,15 +11,15 @@ import com.hku.lesinventory.db.InventoryRepository;
 import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.db.entity.ItemEntity;
+import com.hku.lesinventory.db.entity.ItemWithInstances;
 
 import java.util.List;
 
 public class InventoryViewModel extends AndroidViewModel {
 
-    private InventoryRepository mRepository;
+    private final InventoryRepository mRepository;
 
     private final LiveData<List<ItemEntity>> mItems;
-    private final LiveData<List<String>> mItemNames;
     private final LiveData<List<CategoryEntity>> mCategories;
     private final LiveData<List<String>> mCategoryNames;
     private final LiveData<List<BrandEntity>> mBrands;
@@ -30,7 +30,6 @@ public class InventoryViewModel extends AndroidViewModel {
         mRepository = ((InventoryApp) application).getRepository();
 
         mItems = mRepository.loadAllItems();
-        mItemNames = mRepository.loadAllItemNames();
         mCategories = mRepository.loadAllCategories();
         mCategoryNames = mRepository.loadAllCategoryNames();
         mBrands = mRepository.loadAllBrands();
@@ -41,12 +40,6 @@ public class InventoryViewModel extends AndroidViewModel {
      * Expose LiveData query so the UI can observe it
      */
     public LiveData<List<ItemEntity>> getItems() { return mItems; }
-
-    public LiveData<List<ItemEntity>> getItemsByCategory(int categoryId) {
-        return mRepository.loadItemsByCategory(categoryId);
-    }
-
-    public LiveData<List<String>> getItemNames() { return mItemNames; }
 
     public LiveData<List<CategoryEntity>> getCategories() { return mCategories; }
 
@@ -62,4 +55,8 @@ public class InventoryViewModel extends AndroidViewModel {
 
 
     public void insertItem(ItemEntity item) { mRepository.insert(item); }
+
+    public void insertCategory(CategoryEntity category) { mRepository.insert(category); }
+
+    public void insertBrand(BrandEntity brand) { mRepository.insert(brand); }
 }

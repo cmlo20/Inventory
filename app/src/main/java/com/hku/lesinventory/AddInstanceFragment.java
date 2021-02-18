@@ -88,8 +88,8 @@ public class AddInstanceFragment extends Fragment
                 byte[] imageByte = cursor.getBlob(3);
                 Bitmap image = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
                 // Populate views with data
-                TextView name = layout.findViewById(R.id.et_name);
-                TextView description = layout.findViewById(R.id.et_description);
+                TextView name = layout.findViewById(R.id.name_edittext);
+                TextView description = layout.findViewById(R.id.description_edittext);
                 ImageView photo = layout.findViewById(R.id.item_image);
                 name.setText(nameText);
                 description.setText(descriptionText);

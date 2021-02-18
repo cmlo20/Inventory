@@ -35,6 +35,16 @@
                 android:layout_gravity="center"
                 android:visibility="invisible" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/save_instance_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="@dimen/view_horizontal_margin_large"
+                android:backgroundTint="?attr/colorPrimary"
+                android:contentDescription="@string/cd_save_item"
+                android:src="@drawable/ic_done_white_24dp" />
+
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"
                 android:layout_width="match_parent"
@@ -70,27 +80,17 @@
                             android:layout_height="wrap_content"
                             android:text="@string/header_name"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/sp_brand" />
+                            app:layout_constraintTop_toBottomOf="@id/brand_spinner" />
 
                         <TextView
-                            android:id="@+id/item_brand"
+                            android:id="@+id/item_brand_and_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/text_margin_large"
-                            android:text="@{itemViewModel.itemBrand.name}"
+                            android:text="@{itemViewModel.itemBrand.name + ' ' + itemViewModel.item.name}"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/colorPrimary"
-                            tools:text="Brand" />
-
-                        <TextView
-                            android:id="@+id/item_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/text_margin_small"
-                            android:text="@{itemViewModel.item.name}"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/colorPrimary"
-                            tools:text="Item name" />
+                            tools:text="Item brand + name" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -159,12 +159,23 @@
 
                     <Spinner
                         android:id="@+id/location_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/form_horizontal_margin"
                         android:layout_marginTop="@dimen/form_spinner_vertical_margin"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/add_location_button"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+                    <ImageButton
+                        android:id="@+id/add_location_button"
+                        android:layout_width="@dimen/image_button_size"
+                        android:layout_height="@dimen/image_button_size"
+                        android:layout_marginEnd="@dimen/view_horizontal_margin_small"
+                        android:background="@null"
+                        android:contentDescription="@string/cd_new_location"
+                        android:src="@drawable/baseline_playlist_add_black_24"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                     <TextView
@@ -183,22 +194,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/form_horizontal_margin"
                         android:hint="@string/hint_wait_for_connection"
+                        android:focusable="true"
                         app:layout_constraintEnd_toStartOf="@+id/rfid_scan_button"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    <ImageButton
                         android:id="@+id/rfid_scan_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_margin="@dimen/view_horizontal_margin_large"
-                        android:layout_marginTop="@dimen/view_vertical_margin_large"
-                        android:backgroundTint="@android:color/background_light"
+                        android:layout_width="@dimen/image_button_size"
+                        android:layout_height="@dimen/image_button_size"
+                        android:layout_marginEnd="@dimen/view_horizontal_margin_small"
+                        android:background="@null"
+                        android:contentDescription="@string/cd_rfid_scan"
                         android:src="@drawable/baseline_qr_code_scanner_black_24"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/rfid_edittext"
-                        app:layout_constraintTop_toBottomOf="@+id/location_spinner" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.core.widget.NestedScrollView>

@@ -1,5 +1,6 @@
 package com.hku.lesinventory.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,7 +12,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,9 +30,10 @@ public class InventoryActivity extends AppCompatActivity
 
     public static final String TAG = InventoryActivity.class.getName();
 
-    private ViewPager pager;
+    private ViewPager mPager;
+    private NavigationView mNavigationView;
 
-    private InventoryViewModel inventoryViewModel;
+    private InventoryViewModel mInventoryViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,24 +49,33 @@ public class InventoryActivity extends AppCompatActivity
                                                                  R.string.nav_close_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
-        inventoryViewModel = new ViewModelProvider(this,
+        mInventoryViewModel = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
                 .get(InventoryViewModel.class);
 
-        CategoryPagerAdapter pagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), this);
-        pager = findViewById(R.id.pager);
-        pager.setAdapter(pagerAdapter);
+        CategoryPagerAdapter pagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(),
+                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        mPager = findViewById(R.id.pager);
+        mPager.setAdapter(pagerAdapter);
         // Attach the ViewPager to the TabLayout
         TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(pager);
+        tabLayout.setupWithViewPager(mPager);
 
+        // Todo: Fix: Category pages out of order when new one is created while sorted by name
         // Set an observer to refresh the viewpager when data is updated
-        inventoryViewModel.getCategories().observe(this, categories -> {
-            pager.setAdapter(pagerAdapter);
+        mInventoryViewModel.getCategories().observe(this, categories -> {
+            pagerAdapter.notifyDataSetChanged();
+            mPager.setAdapter(pagerAdapter);
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mNavigationView.setCheckedItem(R.id.nav_item_list);
     }
 
     @Override
@@ -75,11 +85,11 @@ public class InventoryActivity extends AppCompatActivity
         Intent intent = null;
 
         switch(id) {
-            case R.id.nav_inventory:
+            case R.id.nav_item_list:
 
                 break;
             case R.id.nav_rfidscan:
-                //intent = new Intent(this, RFIDScanActivity.class);
+                intent = new Intent(this, RfidScanActivity.class);
                 break;
             case R.id.nav_stocktaking:
                 //intent = new Intent(this, StocktakingActivity.class);
@@ -123,36 +133,35 @@ public class InventoryActivity extends AppCompatActivity
     @Override
     public void onRestart() {
         super.onRestart();
-        pager.getAdapter().notifyDataSetChanged();
+        mPager.getAdapter().notifyDataSetChanged();
     }
 
 
     private class CategoryPagerAdapter extends FragmentPagerAdapter {
 
-        private Context context;
-
-        public CategoryPagerAdapter(FragmentManager fm, Context c) {
-            super(fm);
-            context = c;
+        public CategoryPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
         }
 
         @Override
         public int getCount() { // Return the number of categories
-            List<CategoryEntity> categories = inventoryViewModel.getCategories().getValue();
+            List<CategoryEntity> categories = mInventoryViewModel.getCategories().getValue();
             return categories == null ? 0 : categories.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            List<CategoryEntity> categories = inventoryViewModel.getCategories().getValue();
+            List<CategoryEntity> categories = mInventoryViewModel.getCategories().getValue();
             int categoryId = categories.get(position).getId();
-            CategoryFragment categoryFragment = new CategoryFragment(categoryId);
+            CategoryFragment categoryFragment = CategoryFragment.forCategory(categoryId);
+//            CategoryFragment categoryFragment = new CategoryFragment();
+//            categoryFragment.setCategoryId(categoryId);
             return categoryFragment;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            List<CategoryEntity> categories = inventoryViewModel.getCategories().getValue();
+            List<CategoryEntity> categories = mInventoryViewModel.getCategories().getValue();
             String categoryName = categories.get(position).getName();
             return categoryName;
         }

@@ -111,7 +111,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_edit_item:
+            case R.id.action_web_search:
                 Intent intent = new Intent(this, EditItemActivity.class);
                 intent.putExtra(ItemDetailActivity.EXTRA_ITEM_ID, itemId);
                 startActivity(intent);

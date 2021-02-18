@@ -5,9 +5,9 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_inventory"
+                    android:id="@+id/nav_item_list"
                     android:icon="@drawable/baseline_view_list_black_24"
-                    android:title="@string/nav_inventory" />
+                    android:title="@string/nav_item_list" />
                 <item
                     android:id="@+id/nav_rfidscan"
                     android:icon="@drawable/baseline_qr_code_scanner_black_24"

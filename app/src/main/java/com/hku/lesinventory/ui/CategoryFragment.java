@@ -10,13 +10,15 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hku.lesinventory.databinding.CategoryFragmentBinding;
 import com.hku.lesinventory.db.entity.BrandEntity;
-import com.hku.lesinventory.db.entity.ItemEntity;
+import com.hku.lesinventory.db.entity.ItemWithInstances;
+import com.hku.lesinventory.viewmodel.CategoryViewModel;
 import com.hku.lesinventory.viewmodel.InventoryViewModel;
 
 import java.util.List;
@@ -28,15 +30,13 @@ public class CategoryFragment extends Fragment {
 
     public static final String TAG = CategoryFragment.class.getName();
 
-    private final int mCategoryId;
+    private static final String KEY_CATEGORY_ID = "category_id";
+
+//    private int mCategoryId;
 
     private CategoryFragmentBinding mBinding;
 
     private ItemAdapter mItemAdapter;
-
-    public CategoryFragment(int categoryId) {
-        this.mCategoryId = categoryId;
-    }
 
     @Nullable
     @Override
@@ -55,25 +55,42 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final InventoryViewModel viewModel = new ViewModelProvider(this,
-                ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()))
-                .get(InventoryViewModel.class);
+        // Extract category ID from argument
+        int categoryId = requireArguments().getInt(KEY_CATEGORY_ID);
+        CategoryViewModel.Factory factory = new CategoryViewModel.Factory(
+                requireActivity().getApplication(), categoryId);
 
-        LiveData<List<ItemEntity>> itemsInCategory = viewModel.getItemsByCategory(mCategoryId);
-        subscribeUi(itemsInCategory, viewModel.getBrands());
+        final CategoryViewModel model = new ViewModelProvider(this, factory)
+                .get(CategoryViewModel.class);
+
+//        final InventoryViewModel viewModel = new ViewModelProvider(this,
+//                ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()))
+//                .get(InventoryViewModel.class);
+
+        LiveData<List<ItemWithInstances>> itemsInCategory = model.getItems();
+//        LiveData<List<ItemEntity>> itemsInCategory = viewModel.getItemsByCategory(mCategoryId);
+        LiveData<List<BrandEntity>> allBrands = model.getBrands();
+        subscribeUi(itemsInCategory, allBrands);
     }
 
-    private void subscribeUi(LiveData<List<ItemEntity>> itemsLiveData, LiveData<List<BrandEntity>> brandsLiveData) {
+    private void subscribeUi(LiveData<List<ItemWithInstances>> itemsLiveData,
+                             LiveData<List<BrandEntity>> brandsLiveData) {
         // Update the list when data changes
         itemsLiveData.observe(getViewLifecycleOwner(), items -> {
             if (items != null) {
+                mBinding.setIsLoading(false);
                 mItemAdapter.setItemList(items);
+                mItemAdapter.notifyDataSetChanged();
+            } else {
+                mBinding.setIsLoading(true);
             }
+            mBinding.executePendingBindings();
         });
 
         brandsLiveData.observe(getViewLifecycleOwner(), brands -> {
             if (brands != null) {
                 mItemAdapter.setBrandList(brands);
+                mItemAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -92,4 +109,17 @@ public class CategoryFragment extends Fragment {
             startActivity(intent);
         }
     };
+
+    /** Create category fragment for specific category ID (dependency injection) **/
+    public static CategoryFragment forCategory(int categoryId) {
+        CategoryFragment fragment = new CategoryFragment();
+        Bundle args = new Bundle();
+        args.putInt(KEY_CATEGORY_ID, categoryId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+//    public void setCategoryId(int categoryId) {
+//        mCategoryId = categoryId;
+//    }
 }

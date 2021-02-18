@@ -15,13 +15,13 @@ import java.util.List;
 @Dao
 public interface BrandDao {
 
-    @Query("SELECT * FROM brands")
+    @Query("SELECT * FROM brands ORDER BY name")
     LiveData<List<BrandEntity>> getAllBrands();
 
     @Query("SELECT * FROM brands WHERE id = :brandId")
-    LiveData<List<BrandEntity>> getBrandById(int brandId);
+    LiveData<BrandEntity> getBrandById(int brandId);
 
-    @Query("SELECT name FROM brands")
+    @Query("SELECT name FROM brands ORDER BY name")
     LiveData<List<String>> getAllBrandNames();
 
     @Query("SELECT name FROM brands WHERE id = :brandId")

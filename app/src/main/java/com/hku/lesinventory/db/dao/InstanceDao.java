@@ -8,7 +8,11 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.hku.lesinventory.db.entity.BrandEntity;
+import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.db.entity.InstanceEntity;
+import com.hku.lesinventory.db.entity.ItemEntity;
+import com.hku.lesinventory.db.entity.LocationEntity;
 
 import java.util.List;
 
@@ -18,11 +22,33 @@ public interface InstanceDao {
     @Query("SELECT * FROM instances")
     LiveData<List<InstanceEntity>> loadAllInstances();
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    void insert(InstanceEntity instances);
+    @Query("SELECT * FROM instances WHERE rfidUii = :rfid")
+    LiveData<InstanceEntity> getInstanceByRfid(String rfid);
+
+    @Query("SELECT * FROM items WHERE id IN " +
+            "(SELECT itemId FROM instances WHERE rfidUii = :rfid)")
+    LiveData<ItemEntity> getItemByRfid(String rfid);
+
+    @Query("SELECT * FROM categories WHERE id IN " +
+            "(SELECT categoryId FROM items WHERE id IN" +
+            "(SELECT itemId FROM instances WHERE rfidUii = :rfid))")
+    LiveData<CategoryEntity> getCategoryByRfid(String rfid);
+
+    @Query("SELECT * FROM locations WHERE id IN" +
+            "(SELECT locationId FROM instances WHERE rfidUii = :rfid)")
+    LiveData<LocationEntity> getLocationByRfid(String rfid);
+
+    @Query("SELECT * FROM brands WHERE id IN " +
+            "(SELECT brandId FROM items WHERE id IN " +
+            "(SELECT itemId FROM instances WHERE rfidUii = :rfid))")
+    LiveData<BrandEntity> getBrandByRfid(String rfid);
 
     @Query("SELECT * FROM instances WHERE itemId = :itemId")
     LiveData<List<InstanceEntity>> loadItemInstances(int itemId);
+
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    void insert(InstanceEntity instances);
 
     @Update
     void update(InstanceEntity instance);

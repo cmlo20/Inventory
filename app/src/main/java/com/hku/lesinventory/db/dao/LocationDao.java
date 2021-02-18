@@ -15,13 +15,13 @@ import java.util.List;
 @Dao
 public interface LocationDao {
 
-    @Query("SELECT * FROM locations")
+    @Query("SELECT * FROM locations ORDER BY name")
     LiveData<List<LocationEntity>> getAllLocations();
 
     @Query("SELECT * FROM locations WHERE id = :locationId")
     LiveData<LocationEntity> getLocation(int locationId);
 
-    @Query("SELECT name FROM locations")
+    @Query("SELECT name FROM locations ORDER BY name")
     LiveData<List<String>> getAllLocationNames();
 
     @Query("SELECT id FROM locations WHERE name = :locationName")

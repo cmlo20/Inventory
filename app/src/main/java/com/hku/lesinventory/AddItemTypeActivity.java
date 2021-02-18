@@ -166,8 +166,8 @@ public class AddItemTypeActivity extends AppCompatActivity {
 
 
     public void onClickSave(View view) {
-        EditText name = findViewById(R.id.et_name);
-        EditText description = findViewById(R.id.et_description);
+        EditText name = findViewById(R.id.name_edittext);
+        EditText description = findViewById(R.id.description_edittext);
         Spinner category = findViewById(R.id.item_category);
         ImageButton imageButton = findViewById(R.id.item_image);
 

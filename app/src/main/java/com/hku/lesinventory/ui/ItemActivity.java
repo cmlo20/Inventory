@@ -4,20 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.ItemActivityBinding;
-import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.viewmodel.ItemViewModel;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private InstanceAdapter mInstanceAdapter;
 
-    private String mItemCategory;
+    private String mItemCategory;   // used for setting toolbar title
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +90,21 @@ public class ItemActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_web_search:
+                String query = mBinding.itemBrandAndName.getText().toString();
+                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                intent.putExtra(SearchManager.QUERY, query);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, R.string.toast_unsupported_operation, Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
             case R.id.action_edit_item:
 
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -108,7 +121,9 @@ public class ItemActivity extends AppCompatActivity {
         model.getInstances().observe(this, instanceEntities -> {
             if (instanceEntities != null) {
                 mBinding.setIsLoading(false);
+//                mBinding.instanceList.getRecycledViewPool().clear();
                 mInstanceAdapter.setInstanceList(instanceEntities);
+                mInstanceAdapter.notifyDataSetChanged();
             } else {
                 mBinding.setIsLoading(true);
             }
@@ -116,20 +131,23 @@ public class ItemActivity extends AppCompatActivity {
 
         model.getLocations().observe(this, locationEntities -> {
             if (locationEntities != null) {
-                mBinding.setIsLoading(false);
+//                mBinding.instanceList.getRecycledViewPool().clear();
                 mInstanceAdapter.setLocationList(locationEntities);
-            } else {
-                mBinding.setIsLoading(true);
+                mInstanceAdapter.notifyDataSetChanged();
             }
         });
 
         model.getImageUriString().observe(this, imageUriString -> {
-            Uri imageUri = Uri.parse(imageUriString);
-            try {
-                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                mBinding.itemImage.setImageBitmap(imageBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (imageUriString != null) {
+                mBinding.setIsLoading(true);
+                Uri imageUri = Uri.parse(imageUriString);
+                try {
+                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    mBinding.itemImage.setImageBitmap(imageBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mBinding.setIsLoading(false);
             }
         });
 

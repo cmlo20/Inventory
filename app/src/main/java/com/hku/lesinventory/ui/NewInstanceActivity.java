@@ -2,8 +2,8 @@ package com.hku.lesinventory.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.loader.content.AsyncTaskLoader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,29 +15,45 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.densowave.scannersdk.Common.CommException;
+import com.densowave.scannersdk.Common.CommManager;
+import com.densowave.scannersdk.Common.CommScanner;
+import com.densowave.scannersdk.Const.CommConst;
+import com.densowave.scannersdk.Dto.RFIDScannerSettings;
+import com.densowave.scannersdk.Listener.RFIDDataDelegate;
+import com.densowave.scannersdk.Listener.ScannerAcceptStatusListener;
+import com.densowave.scannersdk.RFID.RFIDData;
+import com.densowave.scannersdk.RFID.RFIDDataReceivedEvent;
+import com.densowave.scannersdk.RFID.RFIDException;
+import com.densowave.scannersdk.RFID.RFIDScanner;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.NewInstanceActivityBinding;
 import com.hku.lesinventory.db.entity.InstanceEntity;
+import com.hku.lesinventory.db.entity.LocationEntity;
 import com.hku.lesinventory.viewmodel.ItemViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class NewInstanceActivity extends AppCompatActivity {
+public class NewInstanceActivity extends AppCompatActivity
+        implements View.OnClickListener, NewOptionDialogFragment.NewOptionDialogListener,
+        ScannerAcceptStatusListener, RFIDDataDelegate {
 
     static final String KEY_ITEM_ID = "item_id";
-
     private int mItemId;
-
-    private ItemViewModel mItemViewModel;
-
     private NewInstanceActivityBinding mBinding;
+    private ItemViewModel mItemViewModel;
+    private List<InstanceEntity> mAllInstances;     // instance list used for input validation
 
-    private List<InstanceEntity> mAllInstances;     // instance list used for form validation
+    private CommScanner mCommScanner = null;
+    private RFIDScanner mRfidScanner = null;
+    private RFIDScannerSettings mOriginalScannerSettings = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +70,55 @@ public class NewInstanceActivity extends AppCompatActivity {
 
         mBinding.setLifecycleOwner(this);
         mBinding.setItemViewModel(mItemViewModel);
+        mBinding.addLocationButton.setOnClickListener(this);
+        mBinding.rfidScanButton.setOnClickListener(this);
+        mBinding.saveInstanceButton.setOnClickListener(this);
 
         populateLocationSpinner(mBinding.locationSpinner);
         // Display item image
         mItemViewModel.getImageUriString().observe(this, imageUriString -> {
-            Uri imageUri = Uri.parse(imageUriString);
-            try {
-                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                mBinding.itemImage.setImageBitmap(imageBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (imageUriString != null) {
+                Uri imageUri = Uri.parse(imageUriString);
+                try {
+                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    mBinding.itemImage.setImageBitmap(imageBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        mItemViewModel.getInstances().observe(this, instances -> {
+        mItemViewModel.getAllInstances().observe(this, instances -> {
             mAllInstances = instances;
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Start waiting for SP1 to connect
+        CommManager.addAcceptStatusListener(this);
+        CommManager.startAccept();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mRfidScanner != null && mOriginalScannerSettings != null) {
+            try {
+                mRfidScanner.setSettings(mOriginalScannerSettings);
+            } catch (RFIDException e) {
+                e.printStackTrace();
+            }
+        }
+        if (mCommScanner != null) {
+            try {
+                mCommScanner.close();
+            } catch (CommException e) {
+                e.printStackTrace();
+            }
+        }
+        mBinding.rfidScanButton.setEnabled(false);
     }
 
     @Override
@@ -78,34 +127,17 @@ public class NewInstanceActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_item, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save_item:
-                if (formIsValid()) {
-                    new SaveInstanceTask(this).execute();
-                    return true;
-                }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void populateLocationSpinner(Spinner spinner) {
-        final ArrayAdapter<String> locationSpinnerAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> locationSpinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, new ArrayList<>());
         locationSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(locationSpinnerAdapter);
         // Observer location livedata from view model
-        mItemViewModel.getLocationNames().observe(this, locations -> {
+        mItemViewModel.getLocations().observe(this, locations -> {
             locationSpinnerAdapter.clear();
-            locationSpinnerAdapter.addAll(locations);
+            for (LocationEntity location : locations) {
+                locationSpinnerAdapter.add(location.getName());
+            }
             locationSpinnerAdapter.notifyDataSetChanged();
         });
     }
@@ -128,6 +160,143 @@ public class NewInstanceActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onDialogPositiveClick(NewOptionDialogFragment dialog) {
+        int dialogTitleId = dialog.getTitleId();
+        EditText nameEditText = dialog.getDialog().findViewById(R.id.new_option_name);
+        String newOptionName = nameEditText.getText().toString();
+
+        switch (dialogTitleId) {
+            case R.string.title_new_location:
+                LocationEntity newLocation = new LocationEntity(newOptionName);
+                mItemViewModel.insertLocation(newLocation);
+                Toast.makeText(this, R.string.toast_location_saved, Toast.LENGTH_SHORT).show();
+                break;
+
+            default:
+
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(NewOptionDialogFragment dialog) {
+        // no-op
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.add_location_button:
+                DialogFragment newLocationDialog = new NewOptionDialogFragment(R.string.title_new_location);
+                newLocationDialog.show(getSupportFragmentManager(), String.valueOf(R.string.title_new_location));
+                break;
+
+            case R.id.rfid_scan_button:
+                if (mRfidScanner == null) {
+                    Toast.makeText(this, R.string.toast_scanner_not_connected, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                try {
+                    mRfidScanner.openInventory();
+                    Toast.makeText(this, R.string.toast_press_scanner_trigger, Toast.LENGTH_SHORT).show();
+                } catch (RFIDException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case R.id.save_instance_button:
+                if (formIsValid()) {
+                    new SaveInstanceTask(this).execute();
+                }
+                break;
+
+            default:
+
+        }
+    }
+
+    @Override
+    public void OnScannerAppeared(CommScanner commScanner) {
+        mCommScanner = commScanner;
+        try {
+            mCommScanner.claim();
+        } catch (CommException e) {
+            e.printStackTrace();
+        }
+        CommManager.endAccept();
+        CommManager.removeAcceptStatusListener(this);
+
+        runOnUiThread(new uiUpdaterConnected(mCommScanner));
+
+        // Get RFID scanner object
+        mRfidScanner = mCommScanner.getRFIDScanner();
+        mRfidScanner.setDataDelegate(this);
+
+        // Configure SP1 settings
+        try {
+            mOriginalScannerSettings = mRfidScanner.getSettings();
+
+            RFIDScannerSettings myScannerSettings = mRfidScanner.getSettings();
+            myScannerSettings.scan.triggerMode = RFIDScannerSettings.Scan.TriggerMode.AUTO_OFF;
+            myScannerSettings.scan.powerLevelRead = 10;
+            mRfidScanner.setSettings(myScannerSettings);
+        } catch (RFIDException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRFIDDataReceived(CommScanner commScanner, RFIDDataReceivedEvent rfidDataReceivedEvent) {
+        List<RFIDData> rfidDataList = rfidDataReceivedEvent.getRFIDData();
+        if (rfidDataList.size() != 0) {
+            RFIDData rfidData = rfidDataList.get(0);
+            runOnUiThread(new uiUpdaterRfidData(rfidData));
+        }
+        try {
+            commScanner.buzzer(CommConst.CommBuzzerType.B1);
+            mRfidScanner.close();
+        } catch (RFIDException | CommException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private class uiUpdaterConnected implements Runnable {
+        private CommScanner commScanner;
+
+        uiUpdaterConnected(CommScanner scanner) {
+            commScanner = scanner;
+        }
+
+        @Override
+        public void run() {
+            mBinding.rfidEdittext.setHint(getString(R.string.rfid_reader_connected,
+                    commScanner.getBTLocalName(), commScanner.getVersion()));
+            mBinding.rfidScanButton.setEnabled(true);
+        }
+    }
+
+    private class uiUpdaterRfidData implements Runnable {
+        private RFIDData rfidData;
+
+        uiUpdaterRfidData(RFIDData data) { rfidData = data; }
+
+        @Override
+        public void run() {
+            mBinding.rfidEdittext.setText(byteToString(rfidData.getUII()));
+        }
+    }
+
+    private String byteToString(byte[] bytes) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (byte b : bytes) {
+            stringBuilder.append(String.format("%02X", b));
+        }
+        return stringBuilder.toString();
+    }
+
+
+
     public class SaveInstanceTask extends AsyncTask<Void, Void, Boolean> {
 
         private Context context;
@@ -147,8 +316,9 @@ public class NewInstanceActivity extends AppCompatActivity {
             String rfidUii = mBinding.rfidEdittext.getText().toString();
             String location = mBinding.locationSpinner.getSelectedItem().toString();
             int locationId = mItemViewModel.getLocationId(location);
+            Date checkedInAt = new Date(System.currentTimeMillis());
 
-            InstanceEntity newInstance = new InstanceEntity(mItemId, locationId, rfidUii);
+            InstanceEntity newInstance = new InstanceEntity(mItemId, locationId, rfidUii, checkedInAt);
             mItemViewModel.insertInstance(newInstance);
 
             return true;

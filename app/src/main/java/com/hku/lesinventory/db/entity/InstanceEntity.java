@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey;
 
 import com.hku.lesinventory.model.Instance;
 
+import java.util.Date;
+
 @Entity(tableName = "instances",
         foreignKeys = {
                 @ForeignKey(entity = LocationEntity.class,
@@ -30,6 +32,7 @@ public class InstanceEntity implements Instance {
     private int locationId;
     private String rfidUii;
     private String barcode;
+    private Date checkedInAt;
 
     @Override
     public int getId() { return id; }
@@ -56,15 +59,21 @@ public class InstanceEntity implements Instance {
 
     public void setBarcode(String barcode) { this.barcode = barcode; }
 
+    @Override
+    public Date getCheckedInAt() { return checkedInAt; }
+
+    public void setCheckedInAt(Date checkedInAt) { this.checkedInAt = checkedInAt; }
+
     public InstanceEntity() {
 
     }
 
     @Ignore
-    public InstanceEntity(int itemId, int locationId, String rfidUii) {
+    public InstanceEntity(int itemId, int locationId, String rfidUii, Date checkedInAt) {
         this.itemId = itemId;
         this.locationId = locationId;
         this.rfidUii = rfidUii;
+        this.checkedInAt = checkedInAt;
 //        this.barcode = barcode;
     }
 }

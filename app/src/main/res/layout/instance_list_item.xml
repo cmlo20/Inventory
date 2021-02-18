@@ -24,14 +24,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/list_instance_margin">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/list_instance_icon_margin"
-                android:layout_marginTop="@dimen/list_instance_icon_margin"
+                android:layout_marginTop="@dimen/list_instance_margin"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -40,7 +41,7 @@
                     android:layout_width="@dimen/list_instance_icon_size"
                     android:layout_height="@dimen/list_instance_icon_size"
                     android:contentDescription="@string/cd_rfid_tag"
-                    android:src="@drawable/round_fingerprint_black_24" />
+                    android:src="@drawable/baseline_qr_code_scanner_black_24" />
 
                 <TextView
                     android:id="@+id/instance_rfid_uii"
@@ -52,31 +53,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_instance_icon_margin"
-                android:layout_marginTop="@dimen/list_instance_icon_margin"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-                <ImageView
-                    android:layout_width="@dimen/list_instance_icon_size"
-                    android:layout_height="@dimen/list_instance_icon_size"
-                    android:contentDescription="@string/cd_barcode"
-                    android:src="@drawable/baseline_qr_code_scanner_black_24" />
-
-                <TextView
-                    android:id="@+id/instance_barcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/list_instance_text_margin"
-                    android:text="@{instance.barcode}"
-                    tools:text="12374992011" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,7 +60,7 @@
                 android:layout_marginTop="@dimen/list_instance_icon_margin"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
                 <ImageView
                     android:layout_width="@dimen/list_instance_icon_size"
@@ -116,14 +92,13 @@
                     android:contentDescription="@string/cd_last_check_in"
                     android:src="@drawable/baseline_check_circle_outline_24" />
 
-                <!--            <TextView-->
-                <!--                android:id="@+id/instance_check_in_date"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:layout_marginTop="@dimen/list_instance_text_margin"-->
-                <!--                android:layout_marginEnd="@dimen/list_instance_text_margin"-->
-                <!--                android:text="@{instance.checkInDate}"-->
-                <!--                tools:text="2020-01-01" />-->
+                <TextView
+                    android:id="@+id/instance_check_in_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_instance_text_margin"
+                    android:text="@{instance.checkedInAt.toLocaleString()}"
+                    tools:text="2020-01-01" />
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

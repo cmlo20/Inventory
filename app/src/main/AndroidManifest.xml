@@ -4,7 +4,7 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="false" />
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -16,6 +16,9 @@
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.WEB_SEARCH" />
+        </intent>
     </queries>
 
     <application
@@ -26,10 +29,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ItemActivity">
-        </activity>
-        <activity android:name=".ui.NewInstanceActivity"
-            android:label="@string/title_new_instance"/>
+        <activity android:name=".ui.RfidScanActivity"></activity>
+        <activity android:name=".ui.ItemActivity"></activity>
+        <activity
+            android:name=".ui.NewInstanceActivity"
+            android:label="@string/title_new_instance" />
         <activity
             android:name=".ui.NewItemActivity"
             android:label="@string/title_new_item"

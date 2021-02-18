@@ -7,5 +7,4 @@ public interface Item {
     String getName();
     String getDescription();
     String getImageUriString();
-    int getQuantity();
 }

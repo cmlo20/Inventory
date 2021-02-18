@@ -11,6 +11,7 @@ import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.db.entity.InstanceEntity;
 import com.hku.lesinventory.db.entity.ItemEntity;
+import com.hku.lesinventory.db.entity.ItemWithInstances;
 import com.hku.lesinventory.db.entity.LocationEntity;
 
 import java.util.List;
@@ -82,7 +83,7 @@ public class InventoryRepository {
     }
 
     public LiveData<List<ItemEntity>> loadItemsByCategory(int categoryId) {
-        return mItemDao.getItemsByCategory(categoryId);
+        return mItemDao.getItemsInCategory(categoryId);
     }
 
     public LiveData<ItemEntity> loadItem(final int itemId) {
@@ -93,6 +94,8 @@ public class InventoryRepository {
 
     public LiveData<String> getImageUriString(int itemId) { return mItemDao.getItemImage(itemId); }
 
+    public LiveData<Integer> getItemQuantity(int itemId) { return mItemDao.getItemQuantity(itemId); }
+
     // Instance Entity
     public LiveData<List<InstanceEntity>> loadItemInstances(final int itemId) {
         return mInstanceDao.loadItemInstances(itemId);
@@ -100,8 +103,26 @@ public class InventoryRepository {
 
     public LiveData<List<InstanceEntity>> loadAllInstances() { return mInstanceDao.loadAllInstances(); }
 
+    public LiveData<InstanceEntity> loadInstanceByRfid(final String rfidUii) { return mInstanceDao.getInstanceByRfid(rfidUii); }
+
+    public LiveData<ItemEntity> loadInstanceItemByRfid(final String rfidUii) { return mInstanceDao.getItemByRfid(rfidUii); }
+
+    public LiveData<CategoryEntity> loadInstanceCategoryByRfid(final String rfidUii) { return mInstanceDao.getCategoryByRfid(rfidUii); }
+
+    public LiveData<LocationEntity> loadInstanceLocationByRfid(final String rfidUii) { return mInstanceDao.getLocationByRfid(rfidUii); }
+
+    public LiveData<BrandEntity> loadInstanceBrandByRfid(final String rfidUii) { return mInstanceDao.getBrandByRfid(rfidUii); }
+
     // Category Entity
     public LiveData<List<CategoryEntity>> loadAllCategories() { return mAllCategories; }
+
+    public LiveData<CategoryEntity> loadCategory(final int categoryId) {
+        return mCategoryDao.getCategoryById(categoryId);
+    }
+
+    public LiveData<List<ItemWithInstances>> loadItemsInCategory(int categoryId) {
+        return mItemDao.getItemsWithInstances(categoryId);
+    }
 
     public LiveData<List<String>> loadAllCategoryNames() { return mAllCategoryNames; }
 
@@ -137,6 +158,24 @@ public class InventoryRepository {
     public void insert(InstanceEntity instance) {
         mExecutors.diskIO().execute(() -> {
             mInstanceDao.insert(instance);
+        });
+    }
+
+    public void insert(CategoryEntity category) {
+        mExecutors.diskIO().execute(() -> {
+            mCategoryDao.insert(category);
+        });
+    }
+
+    public void insert(BrandEntity brand) {
+        mExecutors.diskIO().execute(() -> {
+            mBrandDao.insert(brand);
+        });
+    }
+
+    public void insert(LocationEntity location) {
+        mExecutors.diskIO().execute(() -> {
+            mLocationDao.insert(location);
         });
     }
 }

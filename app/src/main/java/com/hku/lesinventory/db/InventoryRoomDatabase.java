@@ -64,38 +64,39 @@ public abstract class InventoryRoomDatabase extends RoomDatabase {
     private static InventoryRoomDatabase buildDatabase(final Context appContext,
                                                        final AppExecutors executors) {
         return Room.databaseBuilder(appContext, InventoryRoomDatabase.class, DATABASE_NAME)
-            .addCallback(new Callback() {
-                @Override
-                public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                    super.onCreate(db);
-                    executors.diskIO().execute(() ->{
-                        InventoryRoomDatabase database = InventoryRoomDatabase.getInstance(appContext, executors);
-                        // Pre-populate data for testing
-                        CategoryDao categoryDao  = database.categoryDao();
-                        categoryDao.deleteAll();
-                        CategoryEntity category = new CategoryEntity("Mic");
-                        categoryDao.insert(category);
-                        category = new CategoryEntity("VR");
-                        categoryDao.insert(category);
-
-                        BrandDao brandDao = database.brandDao();
-                        brandDao.deleteAll();
-                        BrandEntity brand = new BrandEntity("Oculus");
-                        brandDao.insert(brand);
-                        brand = new BrandEntity("Sennheiser");
-                        brandDao.insert(brand);
-
-                        LocationDao locationDao = database.locationDao();
-                        locationDao.deleteAll();
-                        LocationEntity location = new LocationEntity("CPD-2.74");
-                        locationDao.insert(location);
-                        location = new LocationEntity("CPD-2.76");
-                        locationDao.insert(location);
-
-                        database.setDatabaseCreated();
-                    });
-                }
-            }).build();
+//            .addCallback(new Callback() {
+//                @Override
+//                public void onCreate(@NonNull SupportSQLiteDatabase db) {
+//                    super.onCreate(db);
+//                    executors.diskIO().execute(() ->{
+//                        InventoryRoomDatabase database = InventoryRoomDatabase.getInstance(appContext, executors);
+//                        // Pre-populate data for testing
+////                        CategoryDao categoryDao  = database.categoryDao();
+////                        categoryDao.deleteAll();
+////                        CategoryEntity category = new CategoryEntity("Mic");
+////                        categoryDao.insert(category);
+////                        category = new CategoryEntity("VR");
+////                        categoryDao.insert(category);
+////
+////                        BrandDao brandDao = database.brandDao();
+////                        brandDao.deleteAll();
+////                        BrandEntity brand = new BrandEntity("Oculus");
+////                        brandDao.insert(brand);
+////                        brand = new BrandEntity("Sennheiser");
+////                        brandDao.insert(brand);
+////
+////                        LocationDao locationDao = database.locationDao();
+////                        locationDao.deleteAll();
+////                        LocationEntity location = new LocationEntity("CPD-2.74");
+////                        locationDao.insert(location);
+////                        location = new LocationEntity("CPD-2.76");
+////                        locationDao.insert(location);
+//
+//                        database.setDatabaseCreated();
+//                    });
+//                }
+//            })
+            .build();
     }
 
     private void updateDatabaseCreated(final Context context) {

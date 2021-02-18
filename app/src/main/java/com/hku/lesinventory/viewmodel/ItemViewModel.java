@@ -32,6 +32,7 @@ public class ItemViewModel extends AndroidViewModel {
     private final LiveData<List<LocationEntity>> mLocations;
     private final LiveData<List<String>> mLocationNames;
     private final LiveData<String> mImageUriString;
+    private final LiveData<Integer> mItemQuantity;
 
     public ItemViewModel(@NonNull Application application, InventoryRepository repository,
                          final int itemId) {
@@ -46,6 +47,7 @@ public class ItemViewModel extends AndroidViewModel {
         mLocations = repository.loadAllLocations();
         mLocationNames = repository.loadAllLocationNames();
         mImageUriString = repository.getImageUriString(mItemId);
+        mItemQuantity = repository.getItemQuantity(mItemId);
     }
 
     public LiveData<ItemEntity> getItem() { return mItem; }
@@ -55,6 +57,8 @@ public class ItemViewModel extends AndroidViewModel {
     public LiveData<CategoryEntity> getItemCategory() { return mItemCategory; }
 
     public LiveData<String> getImageUriString() { return mImageUriString; }
+
+    public LiveData<Integer> getItemQuantity() { return mItemQuantity; }
 
     public LiveData<List<InstanceEntity>> getInstances() { return mItemInstances; }
 
@@ -68,6 +72,9 @@ public class ItemViewModel extends AndroidViewModel {
 
 
     public void insertInstance(InstanceEntity instance) { mRepository.insert(instance); }
+
+    public void insertLocation(LocationEntity location) { mRepository.insert(location); }
+
 
     /**
      * A factory is used to inject the item ID into the ViewModel

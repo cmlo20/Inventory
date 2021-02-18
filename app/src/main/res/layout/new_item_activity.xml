@@ -5,8 +5,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.NewItemActivity"
-    tools:viewBindingIgnore="true">
+    tools:context=".ui.NewItemActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -29,6 +28,16 @@
             android:layout_gravity="center"
             android:visibility="invisible" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_item_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/view_horizontal_margin_large"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@string/cd_save_item"
+            android:src="@drawable/ic_done_white_24dp" />
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
@@ -39,13 +48,15 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
-                    android:id="@+id/item_image"
+                    android:id="@+id/item_image_button"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_image_height"
-                    android:layout_marginHorizontal="@dimen/view_horizontal_margin_large"
+                    android:layout_marginHorizontal="@dimen/form_horizontal_margin"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium"
                     android:contentDescription="@string/hint_item_image"
+                    android:background="@null"
                     android:src="@drawable/baseline_photo_camera_black_24"
-                    android:onClick="onClickAddImage"
+                    android:scaleType="centerInside"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -58,16 +69,27 @@
                     android:layout_marginTop="@dimen/form_header_vertical_margin"
                     android:text="@string/header_category"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/item_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/item_image_button" />
 
                 <Spinner
-                    android:id="@+id/sp_category"
-                    android:layout_width="match_parent"
+                    android:id="@+id/category_spinner"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/form_horizontal_margin"
                     android:layout_marginTop="@dimen/form_spinner_vertical_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/add_category_button"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+                <ImageButton
+                    android:id="@+id/add_category_button"
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
+                    android:layout_marginEnd="@dimen/view_horizontal_margin_small"
+                    android:contentDescription="@string/cd_new_category"
+                    android:background="@null"
+                    android:src="@drawable/baseline_playlist_add_black_24"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                 <TextView
@@ -78,16 +100,27 @@
                     android:layout_marginTop="@dimen/form_header_vertical_margin"
                     android:text="@string/header_brand"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sp_category" />
+                    app:layout_constraintTop_toBottomOf="@+id/category_spinner" />
 
                 <Spinner
-                    android:id="@+id/sp_brand"
-                    android:layout_width="match_parent"
+                    android:id="@+id/brand_spinner"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/form_horizontal_margin"
                     android:layout_marginTop="@dimen/form_spinner_vertical_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/add_brand_button"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                <ImageButton
+                    android:id="@+id/add_brand_button"
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
+                    android:layout_marginEnd="@dimen/view_horizontal_margin_small"
+                    android:contentDescription="@string/cd_new_brand"
+                    android:background="@null"
+                    android:src="@drawable/baseline_playlist_add_black_24"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <TextView
@@ -98,14 +131,13 @@
                     android:layout_marginTop="@dimen/form_header_vertical_margin"
                     android:text="@string/header_name"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sp_brand" />
+                    app:layout_constraintTop_toBottomOf="@id/brand_spinner" />
 
                 <EditText
-                    android:id="@+id/et_name"
+                    android:id="@+id/name_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/form_horizontal_margin"
-                    android:layout_marginEnd="@dimen/form_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/form_horizontal_margin"
                     android:hint="@string/hint_item_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -119,19 +151,17 @@
                     android:layout_marginTop="@dimen/form_header_vertical_margin"
                     android:text="@string/header_description"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/et_name" />
+                    app:layout_constraintTop_toBottomOf="@+id/name_edittext" />
 
                 <EditText
-                    android:id="@+id/et_description"
+                    android:id="@+id/description_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/form_horizontal_margin"
-                    android:layout_marginEnd="@dimen/form_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/form_horizontal_margin"
                     android:hint="@string/hint_item_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </FrameLayout>

@@ -25,7 +25,7 @@
             android:text="@string/header_name" />
 
         <TextView
-            android:id="@+id/et_name"
+            android:id="@+id/name_edittext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -37,7 +37,7 @@
             android:text="@string/header_description" />
 
         <TextView
-            android:id="@+id/et_description"
+            android:id="@+id/description_edittext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge" />
