@@ -21,7 +21,7 @@ import java.util.Date;
                         childColumns = "itemId",
                         onDelete = ForeignKey.CASCADE)},
         indices = {
-                @Index(value = {"rfidUii", "barcode"}, unique = true),
+                @Index(value = {"rfidUii", "serialNo"}, unique = true),
                 @Index(value = "locationId"),
                 @Index(value = "itemId")
         })
@@ -31,7 +31,7 @@ public class InstanceEntity implements Instance {
     private int itemId;
     private int locationId;
     private String rfidUii;
-    private String barcode;
+    private String serialNo;
     private Date checkedInAt;
 
     @Override
@@ -55,9 +55,9 @@ public class InstanceEntity implements Instance {
     public void setRfidUii(String uii) { this.rfidUii = uii; }
 
     @Override
-    public String getBarcode() { return barcode; }
+    public String getSerialNo() { return serialNo; }
 
-    public void setBarcode(String barcode) { this.barcode = barcode; }
+    public void setSerialNo(String serialNo) { this.serialNo = serialNo; }
 
     @Override
     public Date getCheckedInAt() { return checkedInAt; }
@@ -74,6 +74,6 @@ public class InstanceEntity implements Instance {
         this.locationId = locationId;
         this.rfidUii = rfidUii;
         this.checkedInAt = checkedInAt;
-//        this.barcode = barcode;
+//        this.serialNo = serialNo;
     }
 }

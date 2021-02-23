@@ -33,4 +33,9 @@ public class LocationEntity implements Location {
     public LocationEntity(String name) {
         this.name = name;
     }
+
+    // Show location name in spinner
+    public String toString() {
+        return(name);
+    }
 }

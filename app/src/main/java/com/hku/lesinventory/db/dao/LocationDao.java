@@ -16,19 +16,13 @@ import java.util.List;
 public interface LocationDao {
 
     @Query("SELECT * FROM locations ORDER BY name")
-    LiveData<List<LocationEntity>> getAllLocations();
+    LiveData<List<LocationEntity>> loadAllLocations();
 
     @Query("SELECT * FROM locations WHERE id = :locationId")
-    LiveData<LocationEntity> getLocation(int locationId);
-
-    @Query("SELECT name FROM locations ORDER BY name")
-    LiveData<List<String>> getAllLocationNames();
+    LiveData<LocationEntity> loadLocation(int locationId);
 
     @Query("SELECT id FROM locations WHERE name = :locationName")
     int getIdByName(String locationName);
-
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    void insertAll(List<LocationEntity> locations);
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     void insert(LocationEntity location);
@@ -38,7 +32,4 @@ public interface LocationDao {
 
     @Delete
     void delete(LocationEntity location);
-
-    @Query("DELETE FROM locations")
-    void deleteAll();
 }

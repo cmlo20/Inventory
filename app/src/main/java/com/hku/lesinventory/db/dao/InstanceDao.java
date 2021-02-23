@@ -22,8 +22,14 @@ public interface InstanceDao {
     @Query("SELECT * FROM instances")
     LiveData<List<InstanceEntity>> loadAllInstances();
 
+    @Query("SELECT * FROM instances WHERE locationId = :locationId")
+    LiveData<List<InstanceEntity>> loadInstancesInLocation(int locationId);
+
     @Query("SELECT * FROM instances WHERE rfidUii = :rfid")
     LiveData<InstanceEntity> getInstanceByRfid(String rfid);
+
+    @Query("SELECT * FROM instances WHERE rfidUii = :rfid")
+    InstanceEntity loadInstanceInBackground(String rfid);
 
     @Query("SELECT * FROM items WHERE id IN " +
             "(SELECT itemId FROM instances WHERE rfidUii = :rfid)")
@@ -32,7 +38,7 @@ public interface InstanceDao {
     @Query("SELECT * FROM categories WHERE id IN " +
             "(SELECT categoryId FROM items WHERE id IN" +
             "(SELECT itemId FROM instances WHERE rfidUii = :rfid))")
-    LiveData<CategoryEntity> getCategoryByRfid(String rfid);
+    LiveData<CategoryEntity> getItemCategoryByRfid(String rfid);
 
     @Query("SELECT * FROM locations WHERE id IN" +
             "(SELECT locationId FROM instances WHERE rfidUii = :rfid)")
@@ -41,7 +47,7 @@ public interface InstanceDao {
     @Query("SELECT * FROM brands WHERE id IN " +
             "(SELECT brandId FROM items WHERE id IN " +
             "(SELECT itemId FROM instances WHERE rfidUii = :rfid))")
-    LiveData<BrandEntity> getBrandByRfid(String rfid);
+    LiveData<BrandEntity> getItemBrandByRfid(String rfid);
 
     @Query("SELECT * FROM instances WHERE itemId = :itemId")
     LiveData<List<InstanceEntity>> loadItemInstances(int itemId);

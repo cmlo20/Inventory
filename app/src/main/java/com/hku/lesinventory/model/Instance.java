@@ -7,6 +7,6 @@ public interface Instance {
     int getItemId();
     int getLocationId();
     String getRfidUii();
-    String getBarcode();
+    String getSerialNo();
     Date getCheckedInAt();
 }

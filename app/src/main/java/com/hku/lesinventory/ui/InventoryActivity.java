@@ -21,7 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.db.entity.CategoryEntity;
-import com.hku.lesinventory.viewmodel.InventoryViewModel;
+import com.hku.lesinventory.viewmodel.ItemListViewModel;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class InventoryActivity extends AppCompatActivity
     private ViewPager mPager;
     private NavigationView mNavigationView;
 
-    private InventoryViewModel mInventoryViewModel;
+    private ItemListViewModel mItemListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +52,9 @@ public class InventoryActivity extends AppCompatActivity
         mNavigationView = findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        mInventoryViewModel = new ViewModelProvider(this,
+        mItemListViewModel = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
-                .get(InventoryViewModel.class);
+                .get(ItemListViewModel.class);
 
         CategoryPagerAdapter pagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(),
                 FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -66,7 +66,7 @@ public class InventoryActivity extends AppCompatActivity
 
         // Todo: Fix: Category pages out of order when new one is created while sorted by name
         // Set an observer to refresh the viewpager when data is updated
-        mInventoryViewModel.getCategories().observe(this, categories -> {
+        mItemListViewModel.loadCategories().observe(this, categories -> {
             pagerAdapter.notifyDataSetChanged();
             mPager.setAdapter(pagerAdapter);
         });
@@ -92,7 +92,7 @@ public class InventoryActivity extends AppCompatActivity
                 intent = new Intent(this, RfidScanActivity.class);
                 break;
             case R.id.nav_stocktaking:
-                //intent = new Intent(this, StocktakingActivity.class);
+                intent = new Intent(this, StocktakingActivity.class);
                 break;
             default:
         }
@@ -145,13 +145,13 @@ public class InventoryActivity extends AppCompatActivity
 
         @Override
         public int getCount() { // Return the number of categories
-            List<CategoryEntity> categories = mInventoryViewModel.getCategories().getValue();
+            List<CategoryEntity> categories = mItemListViewModel.loadCategories().getValue();
             return categories == null ? 0 : categories.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            List<CategoryEntity> categories = mInventoryViewModel.getCategories().getValue();
+            List<CategoryEntity> categories = mItemListViewModel.loadCategories().getValue();
             int categoryId = categories.get(position).getId();
             CategoryFragment categoryFragment = CategoryFragment.forCategory(categoryId);
 //            CategoryFragment categoryFragment = new CategoryFragment();
@@ -161,7 +161,7 @@ public class InventoryActivity extends AppCompatActivity
 
         @Override
         public CharSequence getPageTitle(int position) {
-            List<CategoryEntity> categories = mInventoryViewModel.getCategories().getValue();
+            List<CategoryEntity> categories = mItemListViewModel.loadCategories().getValue();
             String categoryName = categories.get(position).getName();
             return categoryName;
         }

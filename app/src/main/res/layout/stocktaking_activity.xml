@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="hasTagInstance"
+                  type="boolean" />
+        <variable name="totalItemsCount"
+                  type="Integer" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.StocktakingActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar_main" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/view_vertical_margin_large"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium">
+
+                    <ImageView
+                        android:id="@+id/location_icon"
+                        android:layout_width="@dimen/list_instance_icon_size"
+                        android:layout_height="@dimen/list_instance_icon_size"
+                        android:src="@drawable/round_location_on_black_24"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/location_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toStartOf="@+id/total_items_header"
+                        app:layout_constraintStart_toEndOf="@+id/location_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/total_items_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/text_margin_medium"
+                        android:text="@string/header_total_items"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_header_medium"
+                        app:layout_constraintEnd_toStartOf="@+id/scanned_items_count"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/scanned_items_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_number_0"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_header_medium"
+                        app:layout_constraintEnd_toStartOf="@id/total_items_count"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/total_items_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{'/' + String.valueOf(totalItemsCount)}"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_header_medium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text=" /10" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/view_vertical_margin_large">
+
+                    <TextView
+                        android:id="@+id/reader_connection_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/view_horizontal_margin_medium"
+                        android:text="@string/waiting_for_connection"
+                        android:textSize="@dimen/text_size_hint_large"
+                        app:visibleGone="@{!hasTagInstance}" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/tag_instance_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/start_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
+                    android:background="@android:color/holo_green_dark"
+                    android:text="@string/button_start"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_button_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium" />
+
+                <Button
+                    android:id="@+id/clear_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
+                    android:background="@android:color/holo_green_dark"
+                    android:text="@string/button_clear"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_button_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/view_vertical_margin_medium" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

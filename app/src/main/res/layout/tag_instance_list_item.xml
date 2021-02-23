@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="instance"
+            type="com.hku.lesinventory.model.Instance"/>
+        <variable name="brand"
+            type="com.hku.lesinventory.model.Brand"/>
+        <variable name="item"
+            type="com.hku.lesinventory.model.Item"/>
+        <variable name="callback"
+            type="com.hku.lesinventory.ui.InstanceClickCallback"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
+        android:onClick="@{() -> callback.onClick(instance)}"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardCornerRadius="@dimen/cardview_default_radius">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/list_instance_margin">
+
+            <TextView
+                android:id="@+id/instance_rfid_uii"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{instance.rfidUii}"
+                android:textSize="@dimen/text_size_header_medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="301839232ABCD02" />
+
+            <TextView
+                android:id="@+id/instance_brand_and_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_margin_small"
+                android:text="@{brand.name + ' ' + item.name}"
+                android:textSize="@dimen/text_size_header_medium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/instance_rfid_uii"
+                tools:text="Lenovo T442s" />
+
+            <TextView
+                android:id="@+id/check_in_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_checkin_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="15:33" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

@@ -11,9 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <include
-            layout="@layout/toolbar_main"
-            android:id="@+id/toolbar" />
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways">
+            <include
+                layout="@layout/toolbar_main"
+                android:id="@+id/toolbar" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -27,16 +33,6 @@
             android:layout_height="@dimen/loading_indicator_size"
             android:layout_gravity="center"
             android:visibility="invisible" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/save_item_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="@dimen/view_horizontal_margin_large"
-            android:backgroundTint="?attr/colorPrimary"
-            android:contentDescription="@string/cd_save_item"
-            android:src="@drawable/ic_done_white_24dp" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
@@ -125,8 +121,8 @@
 
                 <TextView
                     android:id="@+id/textView"
-                    android:layout_width="38dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/form_horizontal_margin"
                     android:layout_marginTop="@dimen/form_header_vertical_margin"
                     android:text="@string/header_name"
@@ -162,6 +158,18 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/save_item_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/view_horizontal_margin_large"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:contentDescription="@string/cd_save_item"
+                    android:src="@drawable/ic_done_white_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/description_edittext" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </FrameLayout>

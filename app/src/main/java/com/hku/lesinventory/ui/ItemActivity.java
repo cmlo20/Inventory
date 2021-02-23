@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -118,7 +117,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private void subscribeToModel(final ItemViewModel model) {
         // Observes instance list livedata and pass to adapter when it changes
-        model.getInstances().observe(this, instanceEntities -> {
+        model.loadInstances().observe(this, instanceEntities -> {
             if (instanceEntities != null) {
                 mBinding.setIsLoading(false);
 //                mBinding.instanceList.getRecycledViewPool().clear();
@@ -129,7 +128,7 @@ public class ItemActivity extends AppCompatActivity {
             }
         });
 
-        model.getLocations().observe(this, locationEntities -> {
+        model.loadLocations().observe(this, locationEntities -> {
             if (locationEntities != null) {
 //                mBinding.instanceList.getRecycledViewPool().clear();
                 mInstanceAdapter.setLocationList(locationEntities);

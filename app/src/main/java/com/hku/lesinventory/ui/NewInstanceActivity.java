@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -59,6 +57,7 @@ public class NewInstanceActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.new_instance_activity);
+        mBinding.collapsingToolbarLayout.setTitleEnabled(false);    // Disable custom toolbar title to display activity label in toolbar
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -102,11 +101,12 @@ public class NewInstanceActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         if (mRfidScanner != null && mOriginalScannerSettings != null) {
             try {
                 mRfidScanner.setSettings(mOriginalScannerSettings);
+                mRfidScanner.close();
             } catch (RFIDException e) {
                 e.printStackTrace();
             }
@@ -133,7 +133,7 @@ public class NewInstanceActivity extends AppCompatActivity
         locationSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(locationSpinnerAdapter);
         // Observer location livedata from view model
-        mItemViewModel.getLocations().observe(this, locations -> {
+        mItemViewModel.loadLocations().observe(this, locations -> {
             locationSpinnerAdapter.clear();
             for (LocationEntity location : locations) {
                 locationSpinnerAdapter.add(location.getName());
@@ -198,7 +198,7 @@ public class NewInstanceActivity extends AppCompatActivity
                 }
                 try {
                     mRfidScanner.openInventory();
-                    Toast.makeText(this, R.string.toast_press_scanner_trigger, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.toast_scan_item_instruction, Toast.LENGTH_SHORT).show();
                 } catch (RFIDException e) {
                     e.printStackTrace();
                 }
@@ -271,7 +271,7 @@ public class NewInstanceActivity extends AppCompatActivity
         @Override
         public void run() {
             mBinding.rfidEdittext.setHint(getString(R.string.rfid_reader_connected,
-                    commScanner.getBTLocalName(), commScanner.getVersion()));
+                    commScanner.getBTLocalName()));
             mBinding.rfidScanButton.setEnabled(true);
         }
     }

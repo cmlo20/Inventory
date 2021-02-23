@@ -10,7 +10,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.hku.lesinventory.databinding.CategoryFragmentBinding;
 import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.ItemWithInstances;
 import com.hku.lesinventory.viewmodel.CategoryViewModel;
-import com.hku.lesinventory.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
@@ -31,8 +29,6 @@ public class CategoryFragment extends Fragment {
     public static final String TAG = CategoryFragment.class.getName();
 
     private static final String KEY_CATEGORY_ID = "category_id";
-
-//    private int mCategoryId;
 
     private CategoryFragmentBinding mBinding;
 
@@ -118,8 +114,4 @@ public class CategoryFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-//    public void setCategoryId(int categoryId) {
-//        mCategoryId = categoryId;
-//    }
 }

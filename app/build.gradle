@@ -40,6 +40,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
 //    implementation 'com.android.support:design:28.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.fragment:fragment:$rootProject.fragmentVersion"
 
     // Room components
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
@@ -63,9 +64,8 @@ dependencies {
     })
     androidTestImplementation "androidx.test.ext:junit:$rootProject.androidxJunitVersion"
 
-
+    // Scanner libraries
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
     implementation project(':DENSOScannerSDK')
-
 }

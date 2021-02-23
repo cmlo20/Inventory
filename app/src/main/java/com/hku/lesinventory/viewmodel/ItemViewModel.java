@@ -30,7 +30,6 @@ public class ItemViewModel extends AndroidViewModel {
     private final LiveData<List<InstanceEntity>> mItemInstances;
     private final LiveData<List<InstanceEntity>> mAllInstances;
     private final LiveData<List<LocationEntity>> mLocations;
-    private final LiveData<List<String>> mLocationNames;
     private final LiveData<String> mImageUriString;
     private final LiveData<Integer> mItemQuantity;
 
@@ -40,12 +39,11 @@ public class ItemViewModel extends AndroidViewModel {
         mItemId = itemId;
         mRepository = repository;
         mItem = repository.loadItem(mItemId);
-        mItemBrand = repository.getItemBrand(mItemId);
-        mItemCategory = repository.getItemCategory(mItemId);
+        mItemBrand = repository.loadItemBrand(mItemId);
+        mItemCategory = repository.loadItemCategory(mItemId);
         mItemInstances = repository.loadItemInstances(mItemId);
         mAllInstances = repository.loadAllInstances();
         mLocations = repository.loadAllLocations();
-        mLocationNames = repository.loadAllLocationNames();
         mImageUriString = repository.getImageUriString(mItemId);
         mItemQuantity = repository.getItemQuantity(mItemId);
     }
@@ -60,13 +58,11 @@ public class ItemViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getItemQuantity() { return mItemQuantity; }
 
-    public LiveData<List<InstanceEntity>> getInstances() { return mItemInstances; }
+    public LiveData<List<InstanceEntity>> loadInstances() { return mItemInstances; }
 
     public LiveData<List<InstanceEntity>> getAllInstances() { return mAllInstances; }
 
-    public LiveData<List<LocationEntity>> getLocations() { return mLocations; }
-
-    public LiveData<List<String>> getLocationNames() { return mLocationNames; }
+    public LiveData<List<LocationEntity>> loadLocations() { return mLocations; }
 
     public int getLocationId(String locationName) { return mRepository.getLocationId(locationName); }
 

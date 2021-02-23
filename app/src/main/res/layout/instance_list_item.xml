@@ -16,8 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> callback.onClick(instance)}"
-        android:layout_marginStart="@dimen/view_horizontal_margin_medium"
-        android:layout_marginEnd="@dimen/view_horizontal_margin_medium"
+        android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
         app:cardUseCompatPadding="true"
         app:cardElevation="@dimen/cardview_default_elevation"
         app:cardCornerRadius="@dimen/cardview_default_radius">
@@ -31,8 +30,6 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_instance_icon_margin"
-                android:layout_marginTop="@dimen/list_instance_margin"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -56,7 +53,6 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_instance_icon_margin"
                 android:layout_marginTop="@dimen/list_instance_icon_margin"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +76,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_instance_icon_margin"
                 android:layout_marginTop="@dimen/list_instance_icon_margin"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"

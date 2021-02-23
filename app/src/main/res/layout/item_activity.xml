@@ -79,11 +79,10 @@
                 <TextView
                     android:id="@+id/item_description"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/view_horizontal_margin_large"
                     android:layout_marginTop="@dimen/view_vertical_margin_medium"
                     android:text="@{itemViewModel.item.description}"
-                    android:textColor="@android:color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/item_brand_and_name"
                     tools:text="Description" />

@@ -59,7 +59,7 @@ public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.Instan
                     Instance oldInstance = mInstanceList.get(oldItemPosition);
                     return newInstance.getId() == oldInstance.getId()
                             && newInstance.getLocationId() == oldInstance.getLocationId()
-                            && TextUtils.equals(newInstance.getBarcode(), oldInstance.getBarcode())
+                            && TextUtils.equals(newInstance.getSerialNo(), oldInstance.getSerialNo())
                             && TextUtils.equals(newInstance.getRfidUii(), oldInstance.getRfidUii());
                 }
             });
@@ -118,10 +118,10 @@ public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.Instan
         Instance instance = mInstanceList.get(position);
         holder.binding.setInstance(instance);
 
-        int instanceLocationId = instance.getLocationId();
+        int locationId = instance.getLocationId();
         if (mLocationList != null) {
             for (Location location : mLocationList) {
-                if (location.getId() == instanceLocationId) {
+                if (location.getId() == locationId) {
                     holder.binding.setLocation(location);
                 }
             }
@@ -134,6 +134,7 @@ public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.Instan
 
     @Override
     public long getItemId(int position) { return mInstanceList.get(position).getId(); }
+
 
     static class InstanceViewHolder extends RecyclerView.ViewHolder {
 

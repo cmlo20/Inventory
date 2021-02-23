@@ -25,8 +25,8 @@ public class InstanceViewModel extends AndroidViewModel {
     private final LiveData<InstanceEntity> mInstance;
     private final LiveData<LocationEntity> mLocation;
     private final LiveData<ItemEntity> mItem;
-    private final LiveData<CategoryEntity> mCategory;
-    private final LiveData<BrandEntity> mBrand;
+    private final LiveData<CategoryEntity> mItemCategory;
+    private final LiveData<BrandEntity> mItemBrand;
 
 
     public InstanceViewModel(@NonNull Application application, InventoryRepository repository,
@@ -37,8 +37,8 @@ public class InstanceViewModel extends AndroidViewModel {
         mInstance = repository.loadInstanceByRfid(mRfidUii);
         mLocation = repository.loadInstanceLocationByRfid(mRfidUii);
         mItem = repository.loadInstanceItemByRfid(mRfidUii);
-        mCategory = repository.loadInstanceCategoryByRfid(mRfidUii);
-        mBrand = repository.loadInstanceBrandByRfid(mRfidUii);
+        mItemCategory = repository.loadInstanceCategoryByRfid(mRfidUii);
+        mItemBrand = repository.loadInstanceBrandByRfid(mRfidUii);
     }
 
     public LiveData<InstanceEntity> getInstance() { return mInstance; }
@@ -47,9 +47,9 @@ public class InstanceViewModel extends AndroidViewModel {
 
     public LiveData<ItemEntity> getItem() { return mItem; }
 
-    public LiveData<CategoryEntity> getCategory() { return mCategory; }
+    public LiveData<CategoryEntity> getItemCategory() { return mItemCategory; }
 
-    public LiveData<BrandEntity> getBrand() { return mBrand; }
+    public LiveData<BrandEntity> getItemBrand() { return mItemBrand; }
 
     /**
      * A factory is used to inject the item ID into the ViewModel

@@ -34,13 +34,9 @@ public class InventoryRepository {
     private final LocationDao mLocationDao;
 
     private final LiveData<List<ItemEntity>> mAllItems;
-    private final LiveData<List<String>> mAllItemNames;
     private final LiveData<List<CategoryEntity>> mAllCategories;
-    private final LiveData<List<String>> mAllCategoryNames;
     private final LiveData<List<BrandEntity>> mAllBrands;
-    private final LiveData<List<String>> mAllBrandNames;
     private final LiveData<List<LocationEntity>> mAllLocations;
-    private final LiveData<List<String>> mAllLocationNames;
 
     private InventoryRepository(final InventoryRoomDatabase database, final AppExecutors executors) {
         mDatabase = database;
@@ -53,13 +49,9 @@ public class InventoryRepository {
         mLocationDao = database.locationDao();
 
         mAllItems = mItemDao.getAllItems();
-        mAllItemNames = mItemDao.getAllItemNames();
         mAllCategories = mCategoryDao.getAllCategories();
-        mAllCategoryNames = mCategoryDao.getAllCategoryNames();
         mAllBrands = mBrandDao.getAllBrands();
-        mAllBrandNames = mBrandDao.getAllBrandNames();
-        mAllLocations = mLocationDao.getAllLocations();
-        mAllLocationNames = mLocationDao.getAllLocationNames();
+        mAllLocations = mLocationDao.loadAllLocations();
     }
 
     public static InventoryRepository getInstance(final InventoryRoomDatabase database,
@@ -77,43 +69,45 @@ public class InventoryRepository {
     /**
      * Get LiveData from the inventory database
      */
-    // Item Entity
+    /*Item Entity*/
     public LiveData<List<ItemEntity>> loadAllItems() {
         return mAllItems;
-    }
-
-    public LiveData<List<ItemEntity>> loadItemsByCategory(int categoryId) {
-        return mItemDao.getItemsInCategory(categoryId);
     }
 
     public LiveData<ItemEntity> loadItem(final int itemId) {
         return mItemDao.getItemById(itemId);
     }
 
-    public LiveData<List<String>> loadAllItemNames() { return mAllItemNames; }
+    public LiveData<String> getImageUriString(final int itemId) { return mItemDao.getItemImage(itemId); }
 
-    public LiveData<String> getImageUriString(int itemId) { return mItemDao.getItemImage(itemId); }
+    public LiveData<Integer> getItemQuantity(final int itemId) { return mItemDao.getItemQuantity(itemId); }
 
-    public LiveData<Integer> getItemQuantity(int itemId) { return mItemDao.getItemQuantity(itemId); }
 
-    // Instance Entity
+    /*Instance Entity*/
     public LiveData<List<InstanceEntity>> loadItemInstances(final int itemId) {
         return mInstanceDao.loadItemInstances(itemId);
     }
 
     public LiveData<List<InstanceEntity>> loadAllInstances() { return mInstanceDao.loadAllInstances(); }
 
+    public LiveData<List<InstanceEntity>> loadInstancesInLocation(final int locationId) {
+        return mInstanceDao.loadInstancesInLocation(locationId);
+    }
+
     public LiveData<InstanceEntity> loadInstanceByRfid(final String rfidUii) { return mInstanceDao.getInstanceByRfid(rfidUii); }
+
+    public InstanceEntity loadInstanceInBackground(final String rfidUii) { return mInstanceDao.loadInstanceInBackground(rfidUii); }
 
     public LiveData<ItemEntity> loadInstanceItemByRfid(final String rfidUii) { return mInstanceDao.getItemByRfid(rfidUii); }
 
-    public LiveData<CategoryEntity> loadInstanceCategoryByRfid(final String rfidUii) { return mInstanceDao.getCategoryByRfid(rfidUii); }
+    public LiveData<CategoryEntity> loadInstanceCategoryByRfid(final String rfidUii) { return mInstanceDao.getItemCategoryByRfid(rfidUii); }
 
     public LiveData<LocationEntity> loadInstanceLocationByRfid(final String rfidUii) { return mInstanceDao.getLocationByRfid(rfidUii); }
 
-    public LiveData<BrandEntity> loadInstanceBrandByRfid(final String rfidUii) { return mInstanceDao.getBrandByRfid(rfidUii); }
+    public LiveData<BrandEntity> loadInstanceBrandByRfid(final String rfidUii) { return mInstanceDao.getItemBrandByRfid(rfidUii); }
 
-    // Category Entity
+
+    /*Category Entity*/
     public LiveData<List<CategoryEntity>> loadAllCategories() { return mAllCategories; }
 
     public LiveData<CategoryEntity> loadCategory(final int categoryId) {
@@ -124,27 +118,21 @@ public class InventoryRepository {
         return mItemDao.getItemsWithInstances(categoryId);
     }
 
-    public LiveData<List<String>> loadAllCategoryNames() { return mAllCategoryNames; }
-
     public int getCategoryId(String categoryName) { return mCategoryDao.getIdByName(categoryName); }
 
-    public LiveData<CategoryEntity> getItemCategory(int itemId) { return mItemDao.getItemCategory(itemId); }
+    public LiveData<CategoryEntity> loadItemCategory(int itemId) { return mItemDao.getItemCategory(itemId); }
 
-    // Brand Entity
+
+    /*Brand Entity*/
     public LiveData<List<BrandEntity>> loadAllBrands() { return mAllBrands; }
 
-    public LiveData<List<String>> loadAllBrandNames() { return mAllBrandNames; }
-
-    public LiveData<BrandEntity> getItemBrand(int itemId) { return mItemDao.getItemBrand(itemId); }
-
-    public LiveData<String> getBrandName(int brandId) { return mBrandDao.getBrandName(brandId); }
+    public LiveData<BrandEntity> loadItemBrand(int itemId) { return mItemDao.getItemBrand(itemId); }
 
     public int getBrandId(String brandName) { return mBrandDao.getIdByName(brandName); }
 
-    // Location Entity
-    public LiveData<List<LocationEntity>> loadAllLocations() { return mAllLocations; }
 
-    public LiveData<List<String>> loadAllLocationNames() { return mAllLocationNames; }
+    /*Location Entity*/
+    public LiveData<List<LocationEntity>> loadAllLocations() { return mAllLocations; }
 
     public int getLocationId(String locationName) { return mLocationDao.getIdByName(locationName); }
 
@@ -158,6 +146,12 @@ public class InventoryRepository {
     public void insert(InstanceEntity instance) {
         mExecutors.diskIO().execute(() -> {
             mInstanceDao.insert(instance);
+        });
+    }
+
+    public void update(InstanceEntity instance) {
+        mExecutors.diskIO().execute(() -> {
+            mInstanceDao.update(instance);
         });
     }
 

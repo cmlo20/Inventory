@@ -7,6 +7,7 @@
     <string name="nav_item_list">Item List</string>
     <string name="nav_rfidscan">RFID Scan</string>
     <string name="nav_stocktaking">Stocktaking</string>
+    <string name="nav_export">Export as CSV</string>
 
     <!--    Toolbar menu / dialog titles  -->
     <string name="title_new_item">New Item</string>
@@ -17,6 +18,7 @@
     <string name="title_rfid_scan">RFID Scan</string>
     <string name="title_edit_item">Edit Item</string>
     <string name="title_google_item">Google this item</string>
+    <string name="title_stocktaking">Stocktaking</string>
     <string name="save">Save</string>
 
     <!--    Hints for item attributes   -->
@@ -46,11 +48,12 @@
     <string name="toast_category_saved">Category Saved</string>
     <string name="toast_brand_saved">Brand Saved</string>
     <string name="toast_location_saved">Location Saved</string>
-    <string name="toast_press_scanner_trigger">Press scanner trigger to read RFID tag</string>
+    <string name="toast_scan_item_instruction">Press scanner trigger to read RFID tag</string>
     <string name="toast_scanner_not_connected">RFID scanner not connected</string>
     <string name="toast_unsupported_operation">Unsupported operation</string>
     <string name="error_camera_unavailable">Camera not available</string>
-    <string name="rfid_reader_connected">Connected to: %1$s [%2$s]</string>
+    <string name="error_no_record">No record in database</string>
+    <string name="rfid_reader_connected">Connected to: %1$s</string>
     <string name="waiting_for_connection">Waiting for Connection…</string>
 
     <!--    Content description for view elements   -->
@@ -67,30 +70,39 @@
     <string name="cd_last_check_in">Check-in time</string>
     <string name="cd_barcode">Barcode</string>
     <string name="cd_rfid_scan">RFID Scan</string>
+    <string name="cd_edit_item">Edit Item</string>
+    <string name="cd_save_item">Save Item</string>
 
     <!--    Button text     -->
     <string name="button_add">Add</string>
     <string name="button_cancel">Cancel</string>
+    <string name="header_rfid">RFID</string>
+    <string name="header_total_items">Total Items</string>
+    <string name="default_number_0">0</string>
+    <string name="button_start">Start</string>
+    <string name="button_clear">Clear</string>
+    <string name="button_stop">Stop</string>
+    <string name="toast_stocktaking_instruction">Press trigger once to start scanning. Press again to stop</string>
+    <string name="warn_empty_name">Name cannot be empty</string>
 
-    <string name="add_item_type_title">New Item Type</string>
-    <string name="checked_in">Checked-in</string>
-    <string name="add_item_location_hint">Item location</string>
-    <string name="add_item_barcode_hint">Barcode number</string>
-    <string name="add_item_category_hint">Item category</string>
-    <string name="item_image">Item image</string>
-    <string name="item_category_header">Category: </string>
-    <string name="item_location_header">Location: </string>
-    <string name="item_barcode_header">Barcode: </string>
-    <string name="add_item_quantity_hint">Item quantity</string>
-    <string name="item_quantity_header">Quantity: </string>
-    <string name="select_item_header">Item to add</string>
-    <string name="add_instance_title">Add New Item</string>
-    <string name="item_remarks_header">Remarks</string>
-    <string name="scan_button">Scan Barcode</string>
-    <string name="read_tag_header">RFID Tag UII</string>
-    <string name="read_tag">Read Tag</string>
-    <string name="item_rfid_header">RFID UII:</string>
-    <string name="cd_edit_item">Edit Item</string>
-    <string name="cd_save_item">Save Item</string>
+
+    <!--    <string name="add_item_type_title">New Item Type</string>-->
+    <!--    <string name="checked_in">Checked-in</string>-->
+    <!--    <string name="add_item_location_hint">Item location</string>-->
+    <!--    <string name="add_item_barcode_hint">Barcode number</string>-->
+    <!--    <string name="add_item_category_hint">Item category</string>-->
+    <!--    <string name="item_image">Item image</string>-->
+    <!--    <string name="item_category_header">Category: </string>-->
+    <!--    <string name="item_location_header">Location: </string>-->
+    <!--    <string name="item_barcode_header">Barcode: </string>-->
+    <!--    <string name="add_item_quantity_hint">Item quantity</string>-->
+    <!--    <string name="item_quantity_header">Quantity: </string>-->
+    <!--    <string name="select_item_header">Item to add</string>-->
+    <!--    <string name="add_instance_title">Add New Item</string>-->
+    <!--    <string name="item_remarks_header">Remarks</string>-->
+    <!--    <string name="scan_button">Scan Barcode</string>-->
+    <!--    <string name="read_tag_header">RFID Tag UII</string>-->
+    <!--    <string name="read_tag">Read Tag</string>-->
+    <!--    <string name="item_rfid_header">RFID UII:</string>-->
 
 </resources>

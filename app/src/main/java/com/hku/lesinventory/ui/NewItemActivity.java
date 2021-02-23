@@ -14,8 +14,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -26,7 +24,7 @@ import com.hku.lesinventory.databinding.NewItemActivityBinding;
 import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.db.entity.ItemEntity;
-import com.hku.lesinventory.viewmodel.InventoryViewModel;
+import com.hku.lesinventory.viewmodel.ItemListViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +45,7 @@ public class NewItemActivity extends AppCompatActivity
 
     private NewItemActivityBinding mBinding;
 
-    private InventoryViewModel mInventoryViewModel;
+    private ItemListViewModel mItemListViewModel;
 
     private List<ItemEntity> mAllItems;     // List of items stored in database, used for input validation
     private List<BrandEntity> mAllBrands;
@@ -58,6 +56,7 @@ public class NewItemActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mBinding = NewItemActivityBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        mBinding.collapsingToolbarLayout.setTitleEnabled(false);    // Disable custom toolbar title to display activity label in toolbar
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -66,9 +65,9 @@ public class NewItemActivity extends AppCompatActivity
         mBinding.addBrandButton.setOnClickListener(this);
         mBinding.saveItemButton.setOnClickListener(this);
 
-        mInventoryViewModel = new ViewModelProvider(this,
+        mItemListViewModel = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
-                .get(InventoryViewModel.class);
+                .get(ItemListViewModel.class);
 
         subscribeToModel();
     }
@@ -85,11 +84,7 @@ public class NewItemActivity extends AppCompatActivity
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.categorySpinner.setAdapter(categorySpinnerAdapter);
 
-        mInventoryViewModel.getItems().observe(this, items -> {
-            mAllItems = items;
-        });
-
-        mInventoryViewModel.getBrands().observe(this, brands -> {
+        mItemListViewModel.loadBrands().observe(this, brands -> {
             mAllBrands = brands;
             brandSpinnerAdapter.clear();
             for (BrandEntity brand : brands) {
@@ -98,12 +93,16 @@ public class NewItemActivity extends AppCompatActivity
             brandSpinnerAdapter.notifyDataSetChanged();
         });
 
-        mInventoryViewModel.getCategories().observe(this, categories -> {
+        mItemListViewModel.loadCategories().observe(this, categories -> {
             categorySpinnerAdapter.clear();
             for (CategoryEntity category : categories) {
                 categorySpinnerAdapter.add(category.getName());
             }
             categorySpinnerAdapter.notifyDataSetChanged();
+        });
+
+        mItemListViewModel.loadItems().observe(this, items -> {
+            mAllItems = items;
         });
     }
 
@@ -148,13 +147,13 @@ public class NewItemActivity extends AppCompatActivity
         switch (dialogTitleId) {
             case R.string.title_new_category:
                 CategoryEntity newCategory = new CategoryEntity(newOptionName);
-                mInventoryViewModel.insertCategory(newCategory);
+                mItemListViewModel.insertCategory(newCategory);
                 Toast.makeText(this, R.string.toast_category_saved, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.string.title_new_brand:
                 BrandEntity newBrand = new BrandEntity(newOptionName);
-                mInventoryViewModel.insertBrand(newBrand);
+                mItemListViewModel.insertBrand(newBrand);
                 Toast.makeText(this, R.string.toast_brand_saved, Toast.LENGTH_SHORT).show();
                 break;
 
@@ -258,11 +257,11 @@ public class NewItemActivity extends AppCompatActivity
             String description = mBinding.descriptionEdittext.getText().toString();
             String photoUriString = mPhotoUri == null ? null : mPhotoUri.toString();
 
-            int categoryId = mInventoryViewModel.getCategoryId(category);
-            int brandId = mInventoryViewModel.getBrandId(brand);
+            int categoryId = mItemListViewModel.getCategoryId(category);
+            int brandId = mItemListViewModel.getBrandId(brand);
 
             ItemEntity newItem = new ItemEntity(categoryId, brandId, name, description, photoUriString);
-            mInventoryViewModel.insertItem(newItem);
+            mItemListViewModel.insertItem(newItem);
 
             return true;
         }

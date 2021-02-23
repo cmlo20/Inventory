@@ -1,14 +1,8 @@
 package com.hku.lesinventory.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.densowave.scannersdk.Common.CommException;
@@ -24,9 +18,7 @@ import com.densowave.scannersdk.RFID.RFIDException;
 import com.densowave.scannersdk.RFID.RFIDScanner;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.RfidScanActivityBinding;
-import com.hku.lesinventory.viewmodel.InstanceViewModel;
 
-import java.io.IOException;
 import java.util.List;
 
 public class RfidScanActivity extends AppCompatActivity
@@ -46,12 +38,11 @@ public class RfidScanActivity extends AppCompatActivity
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mBinding.setLifecycleOwner(this);
         mBinding.rfidScanButton.setOnClickListener(view -> {
             if (mRfidScanner != null) {
                 try {
                     mRfidScanner.openInventory();
-                    Toast.makeText(this, R.string.toast_press_scanner_trigger, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.toast_scan_item_instruction, Toast.LENGTH_SHORT).show();
                 } catch (RFIDException e) {
                     e.printStackTrace();
                 }
@@ -70,22 +61,9 @@ public class RfidScanActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mRfidScanner != null && mOriginalScannerSettings != null) {
-            try {
-                mRfidScanner.setSettings(mOriginalScannerSettings);
-            } catch (RFIDException e) {
-                e.printStackTrace();
-            }
-        }
-        if (mCommScanner != null) {
-            try {
-                mCommScanner.close();
-            } catch (CommException e) {
-                e.printStackTrace();
-            }
-        }
+    public void onStop() {
+        super.onStop();
+        closeScanner();
     }
 
     @Override
@@ -139,24 +117,6 @@ public class RfidScanActivity extends AppCompatActivity
         }
     }
 
-    private void subscribeToModel(final InstanceViewModel model) {
-        // Set item image
-        model.getItem().observe(this, itemEntity -> {
-            if (itemEntity != null) {
-                String imageUriString = itemEntity.getImageUriString();
-                if (imageUriString != null) {
-                    Uri imageUri = Uri.parse(imageUriString);
-                    try {
-                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                        mBinding.itemImage.setImageBitmap(imageBitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
     private class uiUpdaterConnected implements Runnable {
         private CommScanner commScanner;
 
@@ -167,7 +127,7 @@ public class RfidScanActivity extends AppCompatActivity
         @Override
         public void run() {
             mBinding.rfidEdittext.setHint(getString(R.string.rfid_reader_connected,
-                    commScanner.getBTLocalName(), commScanner.getVersion()));
+                    commScanner.getBTLocalName()));
         }
     }
 
@@ -179,11 +139,14 @@ public class RfidScanActivity extends AppCompatActivity
         @Override
         public void run() {
             String rfidUii = byteToString(rfidData.getUII());
-            InstanceViewModel.Factory factory = new InstanceViewModel.Factory(getApplication(), rfidUii);
-            InstanceViewModel instanceViewModel = new ViewModelProvider(
-                    RfidScanActivity.this, factory).get(InstanceViewModel.class);
-            mBinding.setInstanceViewModel(instanceViewModel);
-            subscribeToModel(instanceViewModel);
+            mBinding.rfidEdittext.setText(rfidUii);
+
+            InstanceFragment instanceFragment = InstanceFragment.forInstance(rfidUii);
+            getSupportFragmentManager()
+                    .beginTransaction()
+//                    .addToBackStack("instance")
+                    .replace(R.id.fragment_container, instanceFragment, null)
+                    .commit();
         }
     }
 
@@ -193,5 +156,23 @@ public class RfidScanActivity extends AppCompatActivity
             stringBuilder.append(String.format("%02X", b));
         }
         return stringBuilder.toString();
+    }
+
+    private void closeScanner() {
+        if (mRfidScanner != null && mOriginalScannerSettings != null) {
+            try {
+                mRfidScanner.setSettings(mOriginalScannerSettings);
+                mRfidScanner.close();
+            } catch (RFIDException e) {
+                e.printStackTrace();
+            }
+        }
+        if (mCommScanner != null) {
+            try {
+                mCommScanner.close();
+            } catch (CommException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

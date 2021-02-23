@@ -15,41 +15,33 @@ import com.hku.lesinventory.db.entity.ItemWithInstances;
 
 import java.util.List;
 
-public class InventoryViewModel extends AndroidViewModel {
+public class ItemListViewModel extends AndroidViewModel {
 
     private final InventoryRepository mRepository;
 
     private final LiveData<List<ItemEntity>> mItems;
     private final LiveData<List<CategoryEntity>> mCategories;
-    private final LiveData<List<String>> mCategoryNames;
     private final LiveData<List<BrandEntity>> mBrands;
-    private final LiveData<List<String>> mBrandNames;
 
-    public InventoryViewModel(@NonNull Application application) {
+    public ItemListViewModel(@NonNull Application application) {
         super(application);
         mRepository = ((InventoryApp) application).getRepository();
 
         mItems = mRepository.loadAllItems();
         mCategories = mRepository.loadAllCategories();
-        mCategoryNames = mRepository.loadAllCategoryNames();
         mBrands = mRepository.loadAllBrands();
-        mBrandNames = mRepository.loadAllBrandNames();
     }
 
     /**
      * Expose LiveData query so the UI can observe it
      */
-    public LiveData<List<ItemEntity>> getItems() { return mItems; }
+    public LiveData<List<ItemEntity>> loadItems() { return mItems; }
 
-    public LiveData<List<CategoryEntity>> getCategories() { return mCategories; }
-
-    public LiveData<List<String>> getCategoryNames() { return mCategoryNames; }
+    public LiveData<List<CategoryEntity>> loadCategories() { return mCategories; }
 
     public int getCategoryId(String categoryName) { return mRepository.getCategoryId(categoryName); }
 
-    public LiveData<List<BrandEntity>> getBrands() { return mBrands; }
-
-    public LiveData<List<String>> getBrandNames() { return mBrandNames; }
+    public LiveData<List<BrandEntity>> loadBrands() { return mBrands; }
 
     public int getBrandId(String brandName) { return mRepository.getBrandId(brandName); }
 
