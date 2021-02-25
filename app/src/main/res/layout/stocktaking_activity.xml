@@ -119,24 +119,25 @@
                 </FrameLayout>
 
                 <Button
-                    android:id="@+id/start_button"
+                    android:id="@+id/find_missing_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
-                    android:background="@android:color/holo_green_dark"
-                    android:text="@string/button_start"
+                    android:enabled="false"
+                    android:background="@color/button_disabled"
+                    android:text="@string/button_find_missing"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_button_large"
                     android:textStyle="bold"
                     android:layout_marginTop="@dimen/view_vertical_margin_medium" />
 
                 <Button
-                    android:id="@+id/clear_button"
+                    android:id="@+id/read_toggle_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/view_horizontal_margin_medium"
-                    android:background="@android:color/holo_green_dark"
-                    android:text="@string/button_clear"
+                    android:background="@color/button_enabled"
+                    android:text="@string/button_start"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_button_large"
                     android:textStyle="bold"

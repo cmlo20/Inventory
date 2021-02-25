@@ -7,7 +7,7 @@
     <string name="nav_item_list">Item List</string>
     <string name="nav_rfidscan">RFID Scan</string>
     <string name="nav_stocktaking">Stocktaking</string>
-    <string name="nav_export">Export as CSV</string>
+    <string name="nav_export">Export</string>
 
     <!--    Toolbar menu / dialog titles  -->
     <string name="title_new_item">New Item</string>
@@ -51,10 +51,12 @@
     <string name="toast_scan_item_instruction">Press scanner trigger to read RFID tag</string>
     <string name="toast_scanner_not_connected">RFID scanner not connected</string>
     <string name="toast_unsupported_operation">Unsupported operation</string>
+    <string name="toast_stocktaking_instruction">Press trigger once to start scanning. Press again to stop</string>
     <string name="error_camera_unavailable">Camera not available</string>
     <string name="error_no_record">No record in database</string>
     <string name="rfid_reader_connected">Connected to: %1$s</string>
     <string name="waiting_for_connection">Waiting for Connection…</string>
+    <string name="warn_empty_name">Name cannot be empty</string>
 
     <!--    Content description for view elements   -->
     <string name="cd_item_list">Item List</string>
@@ -81,9 +83,8 @@
     <string name="default_number_0">0</string>
     <string name="button_start">Start</string>
     <string name="button_clear">Clear</string>
-    <string name="button_stop">Stop</string>
-    <string name="toast_stocktaking_instruction">Press trigger once to start scanning. Press again to stop</string>
-    <string name="warn_empty_name">Name cannot be empty</string>
+    <string name="button_reset">Reset</string>
+    <string name="button_find_missing">Missing Items</string>
 
 
     <!--    <string name="add_item_type_title">New Item Type</string>-->

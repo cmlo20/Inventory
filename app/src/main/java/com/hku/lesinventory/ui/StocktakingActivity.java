@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,10 +29,11 @@ import com.hku.lesinventory.viewmodel.InstanceListViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 
-// Todo: Compare location instance list with scanned instance list
+// Todo: Compare location instance list with scanned instance list to find missing instances
 public class StocktakingActivity extends AppCompatActivity
         implements View.OnClickListener, AdapterView.OnItemSelectedListener,
         ScannerAcceptStatusListener, RFIDDataDelegate {
@@ -42,9 +44,13 @@ public class StocktakingActivity extends AppCompatActivity
 
     private InstanceListViewModel mInstanceListViewModel;
 
-    private List<String> mScannedRfidList = new ArrayList<>();
-    private LocationEntity mCurrentLocation;    // used for updating scanned instance location
-    private List<InstanceEntity> mLocationInstancesList = new ArrayList<>();
+    private ReadAction nextReadAction = ReadAction.START;
+
+    private final List<String> mScannedRfidList = new ArrayList<>();
+    private LocationEntity mCurrentLocation;    // used for updating location of scanned instance
+    private LocationEntity mPreviousLocation;
+    private final List<InstanceEntity> mInstancesInLocation = new ArrayList<>();
+    private final List<InstanceEntity> mMissingInstances = new ArrayList<>();
 
     private CommScanner mCommScanner = null;
     private RFIDScanner mRfidScanner = null;
@@ -60,8 +66,8 @@ public class StocktakingActivity extends AppCompatActivity
         mTagInstanceAdapter = new TagInstanceAdapter(mInstanceClickCallback);
         mBinding.tagInstanceList.setAdapter(mTagInstanceAdapter);
 
-        mBinding.startButton.setOnClickListener(this);
-        mBinding.clearButton.setOnClickListener(this);
+        mBinding.readToggleButton.setOnClickListener(this);
+        mBinding.findMissingButton.setOnClickListener(this);
         mBinding.setLifecycleOwner(this);
 
         mInstanceListViewModel = new ViewModelProvider(this,
@@ -124,38 +130,12 @@ public class StocktakingActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.start_button:
-                if (mRfidScanner != null) {
-                    mBinding.clearButton.setEnabled(true);
-                    mBinding.startButton.setEnabled(false);
-                    mBinding.locationSpinner.setEnabled(false);
-                    mCurrentLocation = (LocationEntity) mBinding.locationSpinner.getSelectedItem();
-//                    mBinding.clearButton.setTextColor(getColor(R.color.text_default_disabled));
-                    try {
-                        mRfidScanner.openInventory();
-                        Toast.makeText(this, R.string.toast_stocktaking_instruction, Toast.LENGTH_SHORT).show();
-                    } catch (RFIDException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Toast.makeText(this, R.string.toast_scanner_not_connected, Toast.LENGTH_SHORT).show();
-                }
+            case R.id.read_toggle_button:
+                runReadAction();
                 break;
 
-            case R.id.clear_button:
-                mBinding.startButton.setEnabled(true);
-                mBinding.locationSpinner.setEnabled(true);
-                mBinding.clearButton.setEnabled(false);
-                mScannedRfidList.clear();
-                mTagInstanceAdapter.clearInstanceList();
-                mBinding.scannedItemsCount.setText(String.valueOf(mTagInstanceAdapter.getItemCount()));
-                if (mRfidScanner != null) {
-                    try {
-                        mRfidScanner.close();
-                    } catch (RFIDException e) {
-                        e.printStackTrace();
-                    }
-                }
+            case R.id.find_missing_button:
+                showMissingItems();
                 break;
         }
     }
@@ -163,20 +143,91 @@ public class StocktakingActivity extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         LocationEntity location = (LocationEntity) parent.getItemAtPosition(pos);
+
+        // Remove observers for instances in previously selected location so ui e.g. total items count won't be updated incorrectly
+        if (mPreviousLocation != null)
+            mInstanceListViewModel.loadInstancesInLocation(mPreviousLocation.getId()).removeObservers(this);
+
+        // Observer instances in currently selected location
         mInstanceListViewModel.loadInstancesInLocation(location.getId())
-                .observe(this, instances -> {
-                    if (instances != null) {
-                        // Update instance list and total item count
-                        mLocationInstancesList.clear();
-                        mLocationInstancesList.addAll(instances);
-                        mBinding.setTotalItemsCount(instances.size());
+                .observe(this, instancesInLocation -> {
+                    if (instancesInLocation != null) {
+                        // Update location instance list and total items count
+                        mInstancesInLocation.clear();
+                        mInstancesInLocation.addAll(instancesInLocation);
+                        mBinding.setTotalItemsCount(mInstancesInLocation.size());
                     }
                 });
+
+        mPreviousLocation = location;
+
+        // Clear scanned rfid list and recyclerview adapter
+        mScannedRfidList.clear();
+        mTagInstanceAdapter.clearInstanceList();
+        mBinding.scannedItemsCount.setText(String.valueOf(mTagInstanceAdapter.getItemCount()));
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private void runReadAction() {
+        switch (nextReadAction) {
+            case START:
+                if (mRfidScanner != null) {
+                    mBinding.locationSpinner.setEnabled(false);
+                    mBinding.findMissingButton.setEnabled(true);
+                    mBinding.findMissingButton.setBackgroundColor(getColor(R.color.button_find_missing));
+
+                    mCurrentLocation = (LocationEntity) mBinding.locationSpinner.getSelectedItem();
+                    mMissingInstances.clear();
+                    mMissingInstances.addAll(mInstancesInLocation);     // copy item instances in selected location for finding missing instances
+                    try {
+                        mRfidScanner.openInventory();
+                        Toast.makeText(this, R.string.toast_stocktaking_instruction, Toast.LENGTH_SHORT).show();
+                    } catch (RFIDException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Toggle read action and update button text
+                    nextReadAction = ReadAction.RESET;
+                    mBinding.readToggleButton.setText(nextReadAction.toResourceString(getResources()));
+
+                } else {
+                    Toast.makeText(this, R.string.toast_scanner_not_connected, Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case RESET:
+                // Clear scanned instance list
+                mScannedRfidList.clear();
+                mTagInstanceAdapter.clearInstanceList();
+                mBinding.scannedItemsCount.setText(String.valueOf(mTagInstanceAdapter.getItemCount()));
+
+                mBinding.locationSpinner.setEnabled(true);
+                mBinding.findMissingButton.setEnabled(false);
+                mBinding.findMissingButton.setBackgroundColor(getColor(R.color.button_disabled));
+
+                // Toggle read action and update button text
+                nextReadAction = ReadAction.START;
+                mBinding.readToggleButton.setText(nextReadAction.toResourceString(getResources()));
+
+
+                if (mRfidScanner != null) {
+                    try {
+                        mRfidScanner.close();
+                    } catch (RFIDException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
+    }
+
+    // Todo: Show missing instances on a dialog
+    private void showMissingItems() {
+        // Compare scanned instances with location instance list and display missing instances in a dialog
+        Toast.makeText(this, "Number of missing items: " + mMissingInstances.size(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -217,15 +268,23 @@ public class StocktakingActivity extends AppCompatActivity
             String rfidUii = byteToString(rfidData.getUII());
             if (!mScannedRfidList.contains(rfidUii)) {
                 mScannedRfidList.add(rfidUii);
-                InstanceEntity instance = mInstanceListViewModel.loadInstanceByRfid(rfidUii);
-                if (instance != null) {
+                InstanceEntity scannedInstance = mInstanceListViewModel.loadInstanceByRfid(rfidUii);
+                if (scannedInstance != null) {
+                    // Remove scanned instance from missing instance list
+                    for (Iterator<InstanceEntity> it = mMissingInstances.iterator(); it.hasNext();) {
+                        InstanceEntity instance = it.next();
+                        if (scannedInstance.getId() == instance.getId()) {
+                            it.remove();
+                        }
+                    }
+
                     // Update instance location and check-in time
-                    instance.setCheckedInAt(new Date(System.currentTimeMillis()));
-                    instance.setLocationId(mCurrentLocation.getId());
-                    mInstanceListViewModel.updateInstance(instance);
+                    scannedInstance.setCheckedInAt(new Date(System.currentTimeMillis()));
+                    scannedInstance.setLocationId(mCurrentLocation.getId());
+                    mInstanceListViewModel.updateInstance(scannedInstance);
 
-
-                    runOnUiThread(new StocktakingActivity.uiUpdaterInstanceData(instance));
+                    // Show instance information in recyclerview
+                    runOnUiThread(new StocktakingActivity.uiUpdaterInstanceData(scannedInstance));
 //                    try {
 //                        commScanner.buzzer(CommConst.CommBuzzerType.B1);
 //                    } catch (CommException e) {
@@ -285,6 +344,22 @@ public class StocktakingActivity extends AppCompatActivity
                 mCommScanner.close();
             } catch (CommException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+
+    private enum ReadAction {
+        START, RESET;
+
+        String toResourceString(Resources resources) {
+            switch (this) {
+                case START:
+                    return resources.getText(R.string.button_start).toString();
+                case RESET:
+                    return resources.getText(R.string.button_reset).toString();
+                default:
+                    throw new IllegalArgumentException();
             }
         }
     }

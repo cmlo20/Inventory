@@ -3,4 +3,7 @@
     <color name="colorPrimary">#468214</color>
     <color name="colorPrimaryDark">#306306</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="button_disabled">#808080</color>
+    <color name="button_enabled">#669900</color>
+    <color name="button_find_missing">#CC0202</color>
 </resources>
