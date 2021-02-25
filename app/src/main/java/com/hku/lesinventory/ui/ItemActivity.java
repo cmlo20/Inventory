@@ -22,6 +22,9 @@ import com.hku.lesinventory.viewmodel.ItemViewModel;
 
 import java.io.IOException;
 
+// Todo: Edit item details
+// Todo: Text search for item instances
+// Todo: Instance click callback
 public class ItemActivity extends AppCompatActivity {
 
     static final String KEY_ITEM_ID = "item_id";

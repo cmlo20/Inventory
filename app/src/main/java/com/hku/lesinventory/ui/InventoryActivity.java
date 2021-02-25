@@ -25,6 +25,7 @@ import com.hku.lesinventory.viewmodel.ItemListViewModel;
 
 import java.util.List;
 
+// Todo: Navigation menu revamp
 public class InventoryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

@@ -187,7 +187,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         int imageWidth = bmOptions.outWidth;
         int imageHeight = bmOptions.outHeight;
-        Log.i(TAG, "image width = " + imageWidth);
+//        Log.i(TAG, "image width = " + imageWidth);
         int scaleFactor = Math.max(1, Math.min(imageWidth/targetWidth, imageHeight/targetHeight));
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
