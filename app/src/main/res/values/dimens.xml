@@ -44,5 +44,6 @@
     <dimen name="text_size_header_small">12sp</dimen>
     <dimen name="text_size_button_large">12sp</dimen>
     <dimen name="text_size_hint_large">16sp</dimen>
+    <dimen name="expandable_list_padding_vertical">12dp</dimen>
 
 </resources>

@@ -8,6 +8,9 @@
     <string name="nav_rfidscan">RFID Scan</string>
     <string name="nav_stocktaking">Stocktaking</string>
     <string name="nav_export">Export</string>
+    <string name="nav_categories">Categories</string>
+    <string name="nav_brands">Brands</string>
+    <string name="nav_locations">Locations</string>
 
     <!--    Toolbar menu / dialog titles  -->
     <string name="title_new_item">New Item</string>
@@ -19,7 +22,8 @@
     <string name="title_edit_item">Edit Item</string>
     <string name="title_google_item">Google this item</string>
     <string name="title_stocktaking">Stocktaking</string>
-    <string name="save">Save</string>
+    <string name="title_missing_items">Missing Items</string>
+    <string name="title_all_items_counted">All Items Counted</string>
 
     <!--    Hints for item attributes   -->
     <string name="hint_item_image">Item Image</string>
@@ -85,6 +89,8 @@
     <string name="button_clear">Clear</string>
     <string name="button_reset">Reset</string>
     <string name="button_find_missing">Missing Items</string>
+    <string name="button_ok">OK</string>
+    <string name="save">Save</string>
 
 
     <!--    <string name="add_item_type_title">New Item Type</string>-->

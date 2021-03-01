@@ -23,7 +23,9 @@ import com.densowave.scannersdk.RFID.RFIDException;
 import com.densowave.scannersdk.RFID.RFIDScanner;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.StocktakingActivityBinding;
+import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.InstanceEntity;
+import com.hku.lesinventory.db.entity.ItemEntity;
 import com.hku.lesinventory.db.entity.LocationEntity;
 import com.hku.lesinventory.viewmodel.InstanceListViewModel;
 
@@ -51,6 +53,10 @@ public class StocktakingActivity extends AppCompatActivity
     private LocationEntity mPreviousLocation;
     private final List<InstanceEntity> mInstancesInLocation = new ArrayList<>();
     private final List<InstanceEntity> mMissingInstances = new ArrayList<>();
+
+    // Used for showing missing instances details
+    private List<ItemEntity> mItemList;
+    private List<BrandEntity> mBrandList;
 
     private CommScanner mCommScanner = null;
     private RFIDScanner mRfidScanner = null;
@@ -108,6 +114,7 @@ public class StocktakingActivity extends AppCompatActivity
 
         mInstanceListViewModel.loadBrands().observe(this, brands -> {
             if (brands != null) {
+                mBrandList = brands;
                 mTagInstanceAdapter.setBrandList(brands);
                 mTagInstanceAdapter.notifyDataSetChanged();
             }
@@ -115,6 +122,7 @@ public class StocktakingActivity extends AppCompatActivity
 
         mInstanceListViewModel.loadItems().observe(this, items -> {
             if (items != null) {
+                mItemList = items;
                 mTagInstanceAdapter.setItemList(items);
                 mTagInstanceAdapter.notifyDataSetChanged();
             }
@@ -227,7 +235,24 @@ public class StocktakingActivity extends AppCompatActivity
     // Todo: Show missing instances on a dialog
     private void showMissingItems() {
         // Compare scanned instances with location instance list and display missing instances in a dialog
-        Toast.makeText(this, "Number of missing items: " + mMissingInstances.size(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Number of missing items: " + mMissingInstances.size(), Toast.LENGTH_SHORT).show();
+        List<String> missingItems = new ArrayList<>();
+        for (InstanceEntity instance : mMissingInstances) {
+            for (ItemEntity item : mItemList) {
+                if (instance.getItemId() == item.getId()) {
+                    String itemName = item.getName();
+                    for (BrandEntity brand : mBrandList) {
+                        if (item.getBrandId() == brand.getId()) {
+                            String itemBrand = brand.getName();
+                            missingItems.add(itemBrand + ' ' + itemName);
+                        }
+                    }
+                }
+            }
+        }
+        MissingItemsDialogFragment missingItemsDialog = new MissingItemsDialogFragment(missingItems);
+        missingItemsDialog.show(getSupportFragmentManager(), String.valueOf(R.string.title_missing_items));
+
     }
 
     @Override

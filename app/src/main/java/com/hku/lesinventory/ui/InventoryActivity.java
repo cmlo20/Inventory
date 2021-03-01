@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -23,6 +24,7 @@ import com.hku.lesinventory.R;
 import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.viewmodel.ItemListViewModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 // Todo: Navigation menu revamp
@@ -31,9 +33,14 @@ public class InventoryActivity extends AppCompatActivity
 
     public static final String TAG = InventoryActivity.class.getName();
 
-    private ViewPager mPager;
-    private NavigationView mNavigationView;
+//    private ViewPager mPager;
+//    private NavigationView mNavigationView;
+    private ExpandableListView mExpandableListView;
+    private ExpandableListAdapter mExpandableListAdapter;
+    private List<String> mExpandableListGroupTitles;
+    private HashMap<String, List<String>> mExpandableListDetails;
 
+    
     private ItemListViewModel mItemListViewModel;
 
     @Override
@@ -50,58 +57,75 @@ public class InventoryActivity extends AppCompatActivity
                                                                  R.string.nav_close_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        mNavigationView = findViewById(R.id.nav_view);
-        mNavigationView.setNavigationItemSelectedListener(this);
+//        mNavigationView = findViewById(R.id.nav_view);
+//        mNavigationView.setNavigationItemSelectedListener(this);
+        mExpandableListView = findViewById(R.id.nav_view_list);
+        mExpandableListAdapter = new ExpandableListAdapter(this, );
 
         mItemListViewModel = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
                 .get(ItemListViewModel.class);
 
-        CategoryPagerAdapter pagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(),
-                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mPager = findViewById(R.id.pager);
-        mPager.setAdapter(pagerAdapter);
-        // Attach the ViewPager to the TabLayout
-        TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mPager);
+//        CategoryPagerAdapter pagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(),
+//                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+//        mPager = findViewById(R.id.pager);
+//        mPager.setAdapter(pagerAdapter);
+//        // Attach the ViewPager to the TabLayout
+//        TabLayout tabLayout = findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(mPager);
 
-        // Todo: Fix: Category pages out of order when new one is created while sorted by name
+
         // Set an observer to refresh the viewpager when data is updated
+        subscribeToModel();
+    }
+
+    private void subscribeToModel() {
         mItemListViewModel.loadCategories().observe(this, categories -> {
-            pagerAdapter.notifyDataSetChanged();
-            mPager.setAdapter(pagerAdapter);
+//            pagerAdapter.notifyDataSetChanged();
+//            mPager.setAdapter(pagerAdapter);
+
+        });
+
+        mItemListViewModel.loadBrands().observe(this, brands -> {
+
         });
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mNavigationView.setCheckedItem(R.id.nav_item_list);
+//        mNavigationView.setCheckedItem(R.id.nav_categories);
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Fragment fragment = null;
-        Intent intent = null;
-
-        switch(id) {
-            case R.id.nav_item_list:
-
-                break;
-            case R.id.nav_rfidscan:
-                intent = new Intent(this, RfidScanActivity.class);
-                break;
-            case R.id.nav_stocktaking:
-                intent = new Intent(this, StocktakingActivity.class);
-                break;
-            default:
-        }
-        if (intent != null) startActivity(intent);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+    public void onRestart() {
+        super.onRestart();
+//        mPager.getAdapter().notifyDataSetChanged();
     }
+
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        Fragment fragment = null;
+//        Intent intent = null;
+//
+//        switch(id) {
+//            case R.id.nav_categories:
+//
+//                break;
+//            case R.id.nav_rfidscan:
+//                intent = new Intent(this, RfidScanActivity.class);
+//                break;
+//            case R.id.nav_stocktaking:
+//                intent = new Intent(this, StocktakingActivity.class);
+//                break;
+//            default:
+//        }
+//        if (intent != null) startActivity(intent);
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
     @Override
     public void onBackPressed() {
@@ -129,12 +153,6 @@ public class InventoryActivity extends AppCompatActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onRestart() {
-        super.onRestart();
-        mPager.getAdapter().notifyDataSetChanged();
     }
 
 

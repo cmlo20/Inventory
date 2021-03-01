@@ -22,16 +22,10 @@
                 layout="@layout/toolbar_main"
                 android:id="@+id/toolbar" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMode="scrollable" />
-
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -42,8 +36,23 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu_nav" />
+        android:layout_gravity="start">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/nav_view_header"
+                layout="@layout/nav_header" />
+
+            <ExpandableListView
+                android:id="@+id/nav_view_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/nav_view_header"
+                android:indicatorEnd="?android:expandableListPreferredItemIndicatorRight" />
+
+        </RelativeLayout>
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -5,9 +5,17 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_item_list"
+                    android:id="@+id/nav_categories"
                     android:icon="@drawable/baseline_view_list_black_24"
-                    android:title="@string/nav_item_list" />
+                    android:title="@string/nav_categories" />
+                <item
+                    android:id="@+id/nav_brands"
+                    android:icon="@drawable/baseline_view_list_black_24"
+                    android:title="@string/nav_brands" />
+                <item
+                    android:id="@+id/nav_locations"
+                    android:icon="@drawable/baseline_view_list_black_24"
+                    android:title="@string/nav_locations" />
                 <item
                     android:id="@+id/nav_rfidscan"
                     android:icon="@drawable/baseline_qr_code_scanner_black_24"
