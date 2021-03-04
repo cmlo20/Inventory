@@ -38,6 +38,7 @@
     <string name="header_location">Location</string>
     <string name="header_quantity">Quantity: %d</string>
     <string name="header_last_check_in">Last check-in</string>
+    <string name="header_image">Image</string>
 
     <!--    Messages  -->
     <string name="warn_empty_item_name">Item name cannot be empty</string>
@@ -85,6 +86,7 @@
     <string name="button_clear">Clear</string>
     <string name="button_reset">Reset</string>
     <string name="button_find_missing">Missing Items</string>
+    <string name="button_select_image">Select Image</string>
 
 
     <!--    <string name="add_item_type_title">New Item Type</string>-->
