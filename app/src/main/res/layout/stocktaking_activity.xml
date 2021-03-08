@@ -105,7 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/view_horizontal_margin_medium"
-                        android:text="@string/waiting_for_connection"
+                        android:text="@string/toast_scanner_not_connected"
                         android:textSize="@dimen/text_size_hint_large"
                         app:visibleGone="@{!hasTagInstance}" />
 

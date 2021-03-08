@@ -3,6 +3,7 @@ package com.hku.lesinventory.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.densowave.scannersdk.Common.CommException;
@@ -16,18 +17,19 @@ import com.densowave.scannersdk.RFID.RFIDData;
 import com.densowave.scannersdk.RFID.RFIDDataReceivedEvent;
 import com.densowave.scannersdk.RFID.RFIDException;
 import com.densowave.scannersdk.RFID.RFIDScanner;
+import com.hku.lesinventory.BaseActivity;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.RfidScanActivityBinding;
 
 import java.util.List;
 
-public class RfidScanActivity extends AppCompatActivity
-        implements ScannerAcceptStatusListener, RFIDDataDelegate {
+public class RfidScanActivity extends BaseActivity
+        implements RFIDDataDelegate {
 
     private RfidScanActivityBinding mBinding;
 
-    private CommScanner mCommScanner = null;
     private RFIDScanner mRfidScanner = null;
+    private boolean mScannerConnectedOnCreate = false;
     private RFIDScannerSettings mOriginalScannerSettings = null;
 
     @Override
@@ -37,6 +39,9 @@ public class RfidScanActivity extends AppCompatActivity
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mScannerConnectedOnCreate = super.isCommScanner();
+        super.startService();
 
         mBinding.rfidScanButton.setOnClickListener(view -> {
             if (mRfidScanner != null) {
@@ -55,15 +60,26 @@ public class RfidScanActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        // Start waiting for SP1 to connect
-        CommManager.addAcceptStatusListener(this);
-        CommManager.startAccept();
+        if (mScannerConnectedOnCreate) {
+            mRfidScanner = super.getCommScanner().getRFIDScanner();
+            mRfidScanner.setDataDelegate(this);
+            configureScannerSettings();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        closeScanner();
+        if (mRfidScanner != null && mOriginalScannerSettings != null) {
+            try {
+                mRfidScanner.close();
+                mRfidScanner.setDataDelegate(null);
+                Log.i("Close: ", "Closing RFID scanner");
+                mRfidScanner.setSettings(mOriginalScannerSettings);
+            } catch (RFIDException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -72,23 +88,7 @@ public class RfidScanActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void OnScannerAppeared(CommScanner commScanner) {
-        mCommScanner = commScanner;
-        try {
-            mCommScanner.claim();
-        } catch (CommException e) {
-            e.printStackTrace();
-        }
-        CommManager.endAccept();
-        CommManager.removeAcceptStatusListener(this);
-
-        runOnUiThread(new uiUpdaterConnected(mCommScanner));
-
-        // Get RFID scanner object
-        mRfidScanner = mCommScanner.getRFIDScanner();
-        mRfidScanner.setDataDelegate(this);
-
+    private void configureScannerSettings() {
         // Configure SP1 settings
         try {
             mOriginalScannerSettings = mRfidScanner.getSettings();
@@ -117,20 +117,6 @@ public class RfidScanActivity extends AppCompatActivity
         }
     }
 
-    private class uiUpdaterConnected implements Runnable {
-        private CommScanner commScanner;
-
-        uiUpdaterConnected(CommScanner scanner) {
-            commScanner = scanner;
-        }
-
-        @Override
-        public void run() {
-            mBinding.rfidEdittext.setHint(getString(R.string.rfid_reader_connected,
-                    commScanner.getBTLocalName()));
-        }
-    }
-
     private class uiUpdaterInstanceData implements Runnable {
         private RFIDData rfidData;
 
@@ -156,23 +142,5 @@ public class RfidScanActivity extends AppCompatActivity
             stringBuilder.append(String.format("%02X", b));
         }
         return stringBuilder.toString();
-    }
-
-    private void closeScanner() {
-        if (mRfidScanner != null && mOriginalScannerSettings != null) {
-            try {
-                mRfidScanner.setSettings(mOriginalScannerSettings);
-                mRfidScanner.close();
-            } catch (RFIDException e) {
-                e.printStackTrace();
-            }
-        }
-        if (mCommScanner != null) {
-            try {
-                mCommScanner.close();
-            } catch (CommException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

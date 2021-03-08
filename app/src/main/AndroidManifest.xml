@@ -42,8 +42,8 @@
         <activity
             android:name=".ui.NewItemActivity"
             android:label="@string/title_new_item"
-            android:parentActivityName=".ui.InventoryActivity" />
-        <activity android:name=".ui.InventoryActivity">
+            android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

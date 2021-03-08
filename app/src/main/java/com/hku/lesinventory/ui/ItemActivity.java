@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import java.io.IOException;
 // Todo: Instance click callback
 public class ItemActivity extends AppCompatActivity {
 
+    static final String TAG = ItemActivity.class.getName();
     static final String KEY_ITEM_ID = "item_id";
 
     private ItemActivityBinding mBinding;
@@ -60,27 +62,6 @@ public class ItemActivity extends AppCompatActivity {
         mBinding.setLifecycleOwner(this);
         mBinding.setItemViewModel(itemViewModel);
         subscribeToModel(itemViewModel);
-
-        /* Set toolbar title and hide it when expanded */
-        final CollapsingToolbarLayout collapsingToolbarLayout = mBinding.collapsingToolbarLayout;
-        AppBarLayout appBarLayout = mBinding.appBarLayout;
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1)
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(mItemCategory);
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
     }
 
     @Override
@@ -155,6 +136,7 @@ public class ItemActivity extends AppCompatActivity {
 
         model.getItemCategory().observe(this, category -> {
             mItemCategory = category.getName();
+            mBinding.collapsingToolbarLayout.setTitle(mItemCategory);
         });
     }
 

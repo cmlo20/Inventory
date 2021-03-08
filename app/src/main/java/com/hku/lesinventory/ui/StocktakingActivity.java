@@ -21,6 +21,7 @@ import com.densowave.scannersdk.RFID.RFIDData;
 import com.densowave.scannersdk.RFID.RFIDDataReceivedEvent;
 import com.densowave.scannersdk.RFID.RFIDException;
 import com.densowave.scannersdk.RFID.RFIDScanner;
+import com.hku.lesinventory.BaseActivity;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.StocktakingActivityBinding;
 import com.hku.lesinventory.db.entity.InstanceEntity;
@@ -33,15 +34,13 @@ import java.util.Iterator;
 import java.util.List;
 
 
-// Todo: Compare location instance list with scanned instance list to find missing instances
-public class StocktakingActivity extends AppCompatActivity
-        implements View.OnClickListener, AdapterView.OnItemSelectedListener,
-        ScannerAcceptStatusListener, RFIDDataDelegate {
+public class StocktakingActivity extends BaseActivity
+        implements View.OnClickListener, AdapterView.OnItemSelectedListener, RFIDDataDelegate {
+
+    static final String TAG = StocktakingActivity.class.getName();
 
     private StocktakingActivityBinding mBinding;
-
     private TagInstanceAdapter mTagInstanceAdapter;
-
     private InstanceListViewModel mInstanceListViewModel;
 
     private ReadAction nextReadAction = ReadAction.START;
@@ -52,8 +51,8 @@ public class StocktakingActivity extends AppCompatActivity
     private final List<InstanceEntity> mInstancesInLocation = new ArrayList<>();
     private final List<InstanceEntity> mMissingInstances = new ArrayList<>();
 
-    private CommScanner mCommScanner = null;
     private RFIDScanner mRfidScanner = null;
+    private boolean mScannerConnectedOnCreate = false;
     private RFIDScannerSettings mOriginalScannerSettings = null;
 
     @Override
@@ -62,6 +61,9 @@ public class StocktakingActivity extends AppCompatActivity
         mBinding = DataBindingUtil.setContentView(this, R.layout.stocktaking_activity);
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mScannerConnectedOnCreate = super.isCommScanner();
+        super.startService();
 
         mTagInstanceAdapter = new TagInstanceAdapter(mInstanceClickCallback);
         mBinding.tagInstanceList.setAdapter(mTagInstanceAdapter);
@@ -79,15 +81,25 @@ public class StocktakingActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        // Start waiting for SP1 to connect
-        CommManager.addAcceptStatusListener(this);
-        CommManager.startAccept();
+        if (mScannerConnectedOnCreate) {
+            mRfidScanner = super.getCommScanner().getRFIDScanner();
+            mRfidScanner.setDataDelegate(this);
+            configureScannerSettings();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        closeScanner();
+        if (mRfidScanner != null && mOriginalScannerSettings != null) {
+            try {
+                mRfidScanner.close();
+                mRfidScanner.setDataDelegate(null);
+                mRfidScanner.setSettings(mOriginalScannerSettings); // restore original settings
+            } catch (RFIDException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void subscribeToModel() {
@@ -172,6 +184,20 @@ public class StocktakingActivity extends AppCompatActivity
 
     }
 
+    private void configureScannerSettings() {
+        // Configure SP1 settings
+        try {
+            mOriginalScannerSettings = mRfidScanner.getSettings();
+
+            RFIDScannerSettings myScannerSettings = mRfidScanner.getSettings();
+            myScannerSettings.scan.triggerMode = RFIDScannerSettings.Scan.TriggerMode.ALTERNATE;
+            myScannerSettings.scan.powerLevelRead = 30;
+            mRfidScanner.setSettings(myScannerSettings);
+        } catch (RFIDException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void runReadAction() {
         switch (nextReadAction) {
             case START:
@@ -231,36 +257,6 @@ public class StocktakingActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnScannerAppeared(CommScanner commScanner) {
-        mCommScanner = commScanner;
-        try {
-            mCommScanner.claim();
-        } catch (CommException e) {
-            e.printStackTrace();
-        }
-        CommManager.endAccept();
-        CommManager.removeAcceptStatusListener(this);
-
-        runOnUiThread(new StocktakingActivity.uiUpdaterConnected(mCommScanner));
-
-        // Get RFID scanner object
-        mRfidScanner = mCommScanner.getRFIDScanner();
-        mRfidScanner.setDataDelegate(this);
-
-        // Configure SP1 settings
-        try {
-            mOriginalScannerSettings = mRfidScanner.getSettings();
-
-            RFIDScannerSettings myScannerSettings = mRfidScanner.getSettings();
-            myScannerSettings.scan.triggerMode = RFIDScannerSettings.Scan.TriggerMode.ALTERNATE;
-            myScannerSettings.scan.powerLevelRead = 30;
-            mRfidScanner.setSettings(myScannerSettings);
-        } catch (RFIDException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void onRFIDDataReceived(CommScanner commScanner, RFIDDataReceivedEvent rfidDataReceivedEvent) {  // Background thread
         List<RFIDData> rfidDataList = rfidDataReceivedEvent.getRFIDData();
         if (rfidDataList.size() != 0) {
@@ -295,20 +291,6 @@ public class StocktakingActivity extends AppCompatActivity
         }
     }
 
-    private class uiUpdaterConnected implements Runnable {
-        private CommScanner commScanner;
-
-        uiUpdaterConnected(CommScanner scanner) {
-            this.commScanner = scanner;
-        }
-
-        @Override
-        public void run() {
-            mBinding.readerConnectionStatus.setText(getString(R.string.rfid_reader_connected,
-                    commScanner.getBTLocalName()));
-        }
-    }
-
     private class uiUpdaterInstanceData implements Runnable {
         private InstanceEntity instance;
 
@@ -328,24 +310,6 @@ public class StocktakingActivity extends AppCompatActivity
             stringBuilder.append(String.format("%02X", b));
         }
         return stringBuilder.toString();
-    }
-
-    private void closeScanner() {
-        if (mRfidScanner != null && mOriginalScannerSettings != null) {
-            try {
-                mRfidScanner.setSettings(mOriginalScannerSettings);
-                mRfidScanner.close();
-            } catch (RFIDException e) {
-                e.printStackTrace();
-            }
-        }
-        if (mCommScanner != null) {
-            try {
-                mCommScanner.close();
-            } catch (CommException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 

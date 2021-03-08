@@ -169,7 +169,7 @@
                             android:id="@+id/rfid_edittext"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/hint_wait_for_connection"
+                            android:hint="@string/error_no_connection"
                             android:focusable="false"
                             android:textSize="@dimen/text_size_rfid"
                             app:layout_constraintEnd_toStartOf="@+id/rfid_scan_button"

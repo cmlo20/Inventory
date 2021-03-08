@@ -50,11 +50,12 @@
     <string name="toast_brand_saved">Brand Saved</string>
     <string name="toast_location_saved">Location Saved</string>
     <string name="toast_scan_item_instruction">Press scanner trigger to read RFID tag</string>
-    <string name="toast_scanner_not_connected">RFID scanner not connected</string>
+    <string name="toast_scanner_not_connected">RFID reader not connected</string>
     <string name="toast_unsupported_operation">Unsupported operation</string>
     <string name="toast_stocktaking_instruction">Press trigger once to start scanning. Press again to stop</string>
     <string name="error_camera_unavailable">Camera not available</string>
     <string name="error_no_record">No record in database</string>
+    <string name="error_no_connection">RFID reader not connected</string>
     <string name="rfid_reader_connected">Connected to: %1$s</string>
     <string name="waiting_for_connection">Waiting for Connection…</string>
     <string name="warn_empty_name">Name cannot be empty</string>

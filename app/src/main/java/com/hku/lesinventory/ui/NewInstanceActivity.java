@@ -28,6 +28,7 @@ import com.densowave.scannersdk.RFID.RFIDData;
 import com.densowave.scannersdk.RFID.RFIDDataReceivedEvent;
 import com.densowave.scannersdk.RFID.RFIDException;
 import com.densowave.scannersdk.RFID.RFIDScanner;
+import com.hku.lesinventory.BaseActivity;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.NewInstanceActivityBinding;
 import com.hku.lesinventory.db.entity.InstanceEntity;
@@ -39,9 +40,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewInstanceActivity extends AppCompatActivity
-        implements View.OnClickListener, NewOptionDialogFragment.NewOptionDialogListener,
-        ScannerAcceptStatusListener, RFIDDataDelegate {
+public class NewInstanceActivity extends BaseActivity
+        implements View.OnClickListener, NewOptionDialogFragment.NewOptionDialogListener, RFIDDataDelegate {
 
     static final String KEY_ITEM_ID = "item_id";
     private int mItemId;
@@ -49,14 +49,18 @@ public class NewInstanceActivity extends AppCompatActivity
     private ItemViewModel mItemViewModel;
     private List<InstanceEntity> mAllInstances;     // instance list used for input validation
 
-    private CommScanner mCommScanner = null;
     private RFIDScanner mRfidScanner = null;
+    private boolean mScannerConnectedOnCreate = false;
     private RFIDScannerSettings mOriginalScannerSettings = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.new_instance_activity);
+
+        mScannerConnectedOnCreate = super.isCommScanner();
+        super.startService();
+
         mBinding.collapsingToolbarLayout.setTitleEnabled(false);    // Disable custom toolbar title to display activity label in toolbar
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -95,9 +99,14 @@ public class NewInstanceActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        // Start waiting for SP1 to connect
-        CommManager.addAcceptStatusListener(this);
-        CommManager.startAccept();
+        if (mScannerConnectedOnCreate) {
+            mRfidScanner = super.getCommScanner().getRFIDScanner();
+            mRfidScanner.setDataDelegate(this);  // register as data listener
+            configureScannerSettings();
+            mBinding.rfidEdittext.setHint(getString(R.string.rfid_reader_connected,
+                    super.getCommScanner().getBTLocalName()));
+            mBinding.rfidScanButton.setEnabled(true);
+        }
     }
 
     @Override
@@ -105,20 +114,13 @@ public class NewInstanceActivity extends AppCompatActivity
         super.onStop();
         if (mRfidScanner != null && mOriginalScannerSettings != null) {
             try {
-                mRfidScanner.setSettings(mOriginalScannerSettings);
                 mRfidScanner.close();
+                mRfidScanner.setDataDelegate(null);
+                mRfidScanner.setSettings(mOriginalScannerSettings);
             } catch (RFIDException e) {
                 e.printStackTrace();
             }
         }
-        if (mCommScanner != null) {
-            try {
-                mCommScanner.close();
-            } catch (CommException e) {
-                e.printStackTrace();
-            }
-        }
-        mBinding.rfidScanButton.setEnabled(false);
     }
 
     @Override
@@ -192,7 +194,7 @@ public class NewInstanceActivity extends AppCompatActivity
                 break;
 
             case R.id.rfid_scan_button:
-                if (mRfidScanner == null) {
+                if (!mScannerConnectedOnCreate) {
                     Toast.makeText(this, R.string.toast_scanner_not_connected, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -216,24 +218,23 @@ public class NewInstanceActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnScannerAppeared(CommScanner commScanner) {
-        mCommScanner = commScanner;
+    public void onRFIDDataReceived(CommScanner commScanner, RFIDDataReceivedEvent rfidDataReceivedEvent) {
+        List<RFIDData> rfidDataList = rfidDataReceivedEvent.getRFIDData();
+        if (rfidDataList.size() != 0) {
+            RFIDData rfidData = rfidDataList.get(0);
+            runOnUiThread(new uiUpdaterRfidData(rfidData));
+        }
         try {
-            mCommScanner.claim();
+            commScanner.buzzer(CommConst.CommBuzzerType.B1);
         } catch (CommException e) {
             e.printStackTrace();
         }
-        CommManager.endAccept();
-        CommManager.removeAcceptStatusListener(this);
+    }
 
-        runOnUiThread(new uiUpdaterConnected(mCommScanner));
-
-        // Get RFID scanner object
-        mRfidScanner = mCommScanner.getRFIDScanner();
-        mRfidScanner.setDataDelegate(this);
-
+    private void configureScannerSettings() {
         // Configure SP1 settings
         try {
+            // Save original scanner settings for restoring later
             mOriginalScannerSettings = mRfidScanner.getSettings();
 
             RFIDScannerSettings myScannerSettings = mRfidScanner.getSettings();
@@ -245,36 +246,6 @@ public class NewInstanceActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onRFIDDataReceived(CommScanner commScanner, RFIDDataReceivedEvent rfidDataReceivedEvent) {
-        List<RFIDData> rfidDataList = rfidDataReceivedEvent.getRFIDData();
-        if (rfidDataList.size() != 0) {
-            RFIDData rfidData = rfidDataList.get(0);
-            runOnUiThread(new uiUpdaterRfidData(rfidData));
-        }
-        try {
-            commScanner.buzzer(CommConst.CommBuzzerType.B1);
-            mRfidScanner.close();
-        } catch (RFIDException | CommException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private class uiUpdaterConnected implements Runnable {
-        private CommScanner commScanner;
-
-        uiUpdaterConnected(CommScanner scanner) {
-            commScanner = scanner;
-        }
-
-        @Override
-        public void run() {
-            mBinding.rfidEdittext.setHint(getString(R.string.rfid_reader_connected,
-                    commScanner.getBTLocalName()));
-            mBinding.rfidScanButton.setEnabled(true);
-        }
-    }
 
     private class uiUpdaterRfidData implements Runnable {
         private RFIDData rfidData;
