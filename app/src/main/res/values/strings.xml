@@ -8,9 +8,6 @@
     <string name="nav_rfidscan">RFID Scan</string>
     <string name="nav_stocktaking">Stocktaking</string>
     <string name="nav_export">Export</string>
-    <string name="nav_categories">Categories</string>
-    <string name="nav_brands">Brands</string>
-    <string name="nav_locations">Locations</string>
 
     <!--    Toolbar menu / dialog titles  -->
     <string name="title_new_item">New Item</string>
@@ -22,8 +19,7 @@
     <string name="title_edit_item">Edit Item</string>
     <string name="title_google_item">Google this item</string>
     <string name="title_stocktaking">Stocktaking</string>
-    <string name="title_missing_items">Missing Items</string>
-    <string name="title_all_items_counted">All Items Counted</string>
+    <string name="save">Save</string>
 
     <!--    Hints for item attributes   -->
     <string name="hint_item_image">Item Image</string>
@@ -42,6 +38,7 @@
     <string name="header_location">Location</string>
     <string name="header_quantity">Quantity: %d</string>
     <string name="header_last_check_in">Last check-in</string>
+    <string name="header_image">Image</string>
 
     <!--    Messages  -->
     <string name="warn_empty_item_name">Item name cannot be empty</string>
@@ -53,11 +50,12 @@
     <string name="toast_brand_saved">Brand Saved</string>
     <string name="toast_location_saved">Location Saved</string>
     <string name="toast_scan_item_instruction">Press scanner trigger to read RFID tag</string>
-    <string name="toast_scanner_not_connected">RFID scanner not connected</string>
+    <string name="toast_scanner_not_connected">RFID reader not connected</string>
     <string name="toast_unsupported_operation">Unsupported operation</string>
     <string name="toast_stocktaking_instruction">Press trigger once to start scanning. Press again to stop</string>
     <string name="error_camera_unavailable">Camera not available</string>
     <string name="error_no_record">No record in database</string>
+    <string name="error_no_connection">RFID reader not connected</string>
     <string name="rfid_reader_connected">Connected to: %1$s</string>
     <string name="waiting_for_connection">Waiting for Connection…</string>
     <string name="warn_empty_name">Name cannot be empty</string>
@@ -89,8 +87,7 @@
     <string name="button_clear">Clear</string>
     <string name="button_reset">Reset</string>
     <string name="button_find_missing">Missing Items</string>
-    <string name="button_ok">OK</string>
-    <string name="save">Save</string>
+    <string name="button_select_image">Select Image</string>
 
 
     <!--    <string name="add_item_type_title">New Item Type</string>-->

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "21069004458",
+    "project_id": "les-inventory",
+    "storage_bucket": "les-inventory.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21069004458:android:cb6b4da1dc6b2cecbe9ad3",
+        "android_client_info": {
+          "package_name": "com.hku.lesinventory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "21069004458-2mrov4ftv990khfgi1sb5co36pep0s0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEGOrYfxWVeqdm1H8s5XubZh6CeKXVg7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "21069004458-2mrov4ftv990khfgi1sb5co36pep0s0r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

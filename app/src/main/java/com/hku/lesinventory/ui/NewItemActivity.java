@@ -27,7 +27,9 @@ import com.hku.lesinventory.db.entity.ItemEntity;
 import com.hku.lesinventory.viewmodel.ItemListViewModel;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,11 +39,12 @@ public class NewItemActivity extends AppCompatActivity
         implements View.OnClickListener, NewOptionDialogFragment.NewOptionDialogListener {
 
     public static final String TAG = NewItemActivity.class.getName();
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_PICK_IMAGE = 2;
 
     private String mCurrentPhotoPath;
     private Uri mPhotoUri;
+    private File mPhotoFile;
 
     private NewItemActivityBinding mBinding;
 
@@ -60,10 +63,19 @@ public class NewItemActivity extends AppCompatActivity
         setSupportActionBar(mBinding.toolbar.getRoot());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mBinding.selectImageButton.setOnClickListener(this);
         mBinding.itemImageButton.setOnClickListener(this);
         mBinding.addCategoryButton.setOnClickListener(this);
         mBinding.addBrandButton.setOnClickListener(this);
         mBinding.saveItemButton.setOnClickListener(this);
+
+        try {
+            mPhotoFile = createImageFile();
+            mPhotoUri = FileProvider.getUriForFile(this,
+                    "com.hku.lesinventory", mPhotoFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         mItemListViewModel = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
@@ -170,19 +182,19 @@ public class NewItemActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.select_image_button:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_PICK_IMAGE);
+                }
+                break;
+
             case R.id.item_image_button:
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException e) {
-                        // Error occurred while creating the File
-                        e.printStackTrace();
-                    }
-                    if (photoFile != null) {
-                        mPhotoUri = FileProvider.getUriForFile(this,
-                                "com.hku.lesinventory", photoFile);
+                    if (mPhotoFile != null) {
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
                         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                     }
@@ -229,9 +241,30 @@ public class NewItemActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-            mBinding.itemImageButton.setImageBitmap(bitmap);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_PICK_IMAGE) {    // Pick image
+                Uri imageUri = data.getData();
+                // Write data to photo file in internal storage
+                int maxBufferSize = 1 * 1024 * 1024;
+                try (InputStream is = getContentResolver().openInputStream(imageUri);
+                     FileOutputStream fos = new FileOutputStream(mPhotoFile)){
+                    int bytesAvailable = is.available();
+                    int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    final byte[] buffers = new byte[bufferSize];
+                    int read = 0;
+                    while ((read = is.read(buffers)) != -1) {
+                        fos.write(buffers, 0, read);
+                    }
+                    // Display selected image
+                    mBinding.itemImageButton.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {   // Capture image
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+                mBinding.itemImageButton.setImageBitmap(bitmap);
+            }
         }
     }
 
