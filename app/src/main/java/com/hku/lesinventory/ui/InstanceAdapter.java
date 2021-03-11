@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.InstanceListItemBinding;
 import com.hku.lesinventory.model.Instance;
-import com.hku.lesinventory.model.Location;
+import com.hku.lesinventory.model.Option;
 
 import java.util.List;
 
 public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.InstanceViewHolder>{
 
     List<? extends Instance> mInstanceList;
-    List<? extends Location> mLocationList;
+    List<? extends Option> mLocationList;
 
     @Nullable
     private final InstanceClickCallback mInstanceClickCallback;
@@ -68,7 +68,7 @@ public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.Instan
         }
     }
 
-    public void setLocationList(final List<? extends Location> locationList) {
+    public void setLocationList(final List<? extends Option> locationList) {
         if (mLocationList == null) {
             mLocationList = locationList;
             notifyItemRangeInserted(0, locationList.size());
@@ -93,8 +93,8 @@ public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.Instan
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Location newLocation = locationList.get(newItemPosition);
-                    Location oldLocation = mLocationList.get(oldItemPosition);
+                    Option newLocation = locationList.get(newItemPosition);
+                    Option oldLocation = mLocationList.get(oldItemPosition);
                     return newLocation.getId() == oldLocation.getId()
                             && TextUtils.equals(newLocation.getName(), oldLocation.getName());
                 }
@@ -120,7 +120,7 @@ public class InstanceAdapter extends RecyclerView.Adapter<InstanceAdapter.Instan
 
         int locationId = instance.getLocationId();
         if (mLocationList != null) {
-            for (Location location : mLocationList) {
+            for (Option location : mLocationList) {
                 if (location.getId() == locationId) {
                     holder.binding.setLocation(location);
                 }

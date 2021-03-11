@@ -12,6 +12,7 @@ import com.hku.lesinventory.db.entity.BrandEntity;
 import com.hku.lesinventory.db.entity.CategoryEntity;
 import com.hku.lesinventory.db.entity.ItemEntity;
 import com.hku.lesinventory.db.entity.ItemWithInstances;
+import com.hku.lesinventory.db.entity.LocationEntity;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class ItemListViewModel extends AndroidViewModel {
     private final LiveData<List<ItemEntity>> mItems;
     private final LiveData<List<CategoryEntity>> mCategories;
     private final LiveData<List<BrandEntity>> mBrands;
+    private final LiveData<List<LocationEntity>> mLocations;
 
     public ItemListViewModel(@NonNull Application application) {
         super(application);
@@ -30,6 +32,7 @@ public class ItemListViewModel extends AndroidViewModel {
         mItems = mRepository.loadAllItems();
         mCategories = mRepository.loadAllCategories();
         mBrands = mRepository.loadAllBrands();
+        mLocations = mRepository.loadAllLocations();
     }
 
     /**
@@ -44,6 +47,8 @@ public class ItemListViewModel extends AndroidViewModel {
     public LiveData<List<BrandEntity>> loadBrands() { return mBrands; }
 
     public int getBrandId(String brandName) { return mRepository.getBrandId(brandName); }
+
+    public LiveData<List<LocationEntity>> loadLocations() { return mLocations; }
 
 
     public void insertItem(ItemEntity item) { mRepository.insert(item); }

@@ -1,16 +1,15 @@
 package com.hku.lesinventory.db.entity;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.hku.lesinventory.model.Brand;
+import com.hku.lesinventory.model.Option;
 
 @Entity(tableName = "brands",
         indices = {@Index(value = "name", unique = true)})
-public class BrandEntity implements Brand {
+public class BrandEntity implements Option {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;
@@ -24,6 +23,11 @@ public class BrandEntity implements Brand {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 
     public BrandEntity() {
 

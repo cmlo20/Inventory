@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/group_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/expandable_list_group_icon_margin_horizontal"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/baseline_view_list_black_24" />
 
     <TextView
         android:id="@+id/group_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-        android:textColor="@android:color/black"
+        android:layout_toRightOf="@id/group_icon"
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-medium"
         android:paddingVertical="@dimen/expandable_list_padding_vertical"
         tools:text="Categories" />
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/group_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/expandable_list_group_indicator_margin_horizontal"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true" />
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.hku.lesinventory.model;
 
-public interface Brand {
+public interface Option {
     int getId();
     String getName();
+    String toString();
 }

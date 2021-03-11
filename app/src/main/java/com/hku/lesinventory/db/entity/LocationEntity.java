@@ -6,11 +6,11 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.hku.lesinventory.model.Location;
+import com.hku.lesinventory.model.Option;
 
 @Entity(tableName = "locations",
         indices = {@Index(value = "name", unique = true)})
-public class LocationEntity implements Location {
+public class LocationEntity implements Option {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;
@@ -25,6 +25,11 @@ public class LocationEntity implements Location {
 
     public void setName(String name) { this.name = name; }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public LocationEntity() {
 
     }
@@ -32,10 +37,5 @@ public class LocationEntity implements Location {
     @Ignore
     public LocationEntity(String name) {
         this.name = name;
-    }
-
-    // Show location name in spinner
-    public String toString() {
-        return(name);
     }
 }

@@ -1,37 +1,27 @@
 package com.hku.lesinventory.ui;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.InventoryListItemBinding;
 import com.hku.lesinventory.db.entity.ItemWithInstances;
-import com.hku.lesinventory.model.Brand;
 import com.hku.lesinventory.model.Item;
-import com.hku.lesinventory.viewmodel.ItemViewModel;
+import com.hku.lesinventory.model.Option;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder>{
@@ -39,7 +29,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public static final String TAG = ItemAdapter.class.getName();
 
     List<ItemWithInstances> mItemList;
-    List<? extends Brand> mBrandList;
+    List<? extends Option> mBrandList;
 
     @Nullable
     private final ItemClickCallback mItemClickCallback;
@@ -92,7 +82,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
     }
 
-    public void setBrandList(final List<? extends Brand> brandList) {
+    public void setBrandList(final List<? extends Option> brandList) {
         if (mBrandList == null) {
             mBrandList = brandList;
             notifyItemRangeInserted(0, brandList.size());
@@ -116,8 +106,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Brand newBrand = brandList.get(newItemPosition);
-                    Brand oldBrand = mBrandList.get(oldItemPosition);
+                    Option newBrand = brandList.get(newItemPosition);
+                    Option oldBrand = mBrandList.get(oldItemPosition);
                     return newBrand.getId() == oldBrand.getId()
                             && TextUtils.equals(newBrand.getName(), oldBrand.getName());
                 }
@@ -158,7 +148,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
             if (mBrandList != null) {
                 int itemBrandId = item.getBrandId();
-                for (Brand brand : mBrandList) {
+                for (Option brand : mBrandList) {
                     if (brand.getId() == itemBrandId) {
                         holder.binding.setBrand(brand);     // bind brand data
                     }

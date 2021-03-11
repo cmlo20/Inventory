@@ -7,7 +7,7 @@
         <variable name="instance"
             type="com.hku.lesinventory.model.Instance"/>
         <variable name="brand"
-            type="com.hku.lesinventory.model.Brand"/>
+            type="com.hku.lesinventory.model.Option"/>
         <variable name="item"
             type="com.hku.lesinventory.model.Item"/>
         <variable name="callback"

@@ -9,6 +9,10 @@
     <dimen name="list_instance_icon_size">24dp</dimen>
     <dimen name="list_instance_icon_margin">4dp</dimen>
     <dimen name="list_instance_margin">16dp</dimen>
+    <dimen name="expandable_list_padding_vertical">16dp</dimen>
+    <dimen name="expandable_list_group_icon_margin_horizontal">16dp</dimen>
+    <dimen name="expandable_list_group_indicator_margin_horizontal">16dp</dimen>
+    <dimen name="expandable_list_item_margin_start">64dp</dimen>
 
     <!--    Form items      -->
     <dimen name="form_horizontal_margin">16dp</dimen>
@@ -44,6 +48,5 @@
     <dimen name="text_size_header_small">12sp</dimen>
     <dimen name="text_size_button_large">12sp</dimen>
     <dimen name="text_size_hint_large">16sp</dimen>
-    <dimen name="expandable_list_padding_vertical">12dp</dimen>
 
 </resources>

@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hku.lesinventory.R;
 import com.hku.lesinventory.databinding.TagInstanceListItemBinding;
 import com.hku.lesinventory.db.entity.InstanceEntity;
-import com.hku.lesinventory.model.Brand;
 import com.hku.lesinventory.model.Instance;
 import com.hku.lesinventory.model.Item;
+import com.hku.lesinventory.model.Option;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class TagInstanceAdapter extends RecyclerView.Adapter<TagInstanceAdapter.TagInstanceViewHolder>{
 
     List<InstanceEntity> mInstanceList;
-    List<? extends Brand> mBrandList;
+    List<? extends Option> mBrandList;
     List<? extends Item> mItemList;
 
     @Nullable
@@ -38,7 +38,7 @@ public class TagInstanceAdapter extends RecyclerView.Adapter<TagInstanceAdapter.
         setHasStableIds(true);
     }
 
-    public void setBrandList(final List<? extends Brand> brandList) {
+    public void setBrandList(final List<? extends Option> brandList) {
         if (mBrandList == null) {
             mBrandList = brandList;
             notifyItemRangeInserted(0, brandList.size());
@@ -63,8 +63,8 @@ public class TagInstanceAdapter extends RecyclerView.Adapter<TagInstanceAdapter.
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Brand newBrand = brandList.get(newItemPosition);
-                    Brand oldBrand = mBrandList.get(oldItemPosition);
+                    Option newBrand = brandList.get(newItemPosition);
+                    Option oldBrand = mBrandList.get(oldItemPosition);
                     return newBrand.getId() == oldBrand.getId()
                             && TextUtils.equals(newBrand.getName(), oldBrand.getName());
                 }
@@ -138,7 +138,7 @@ public class TagInstanceAdapter extends RecyclerView.Adapter<TagInstanceAdapter.
                     // Set brand
                     int brandId = item.getBrandId();
                     if (mBrandList != null) {
-                        for (Brand brand : mBrandList) {
+                        for (Option brand : mBrandList) {
                             if (brand.getId() == brandId) {
                                 holder.binding.setBrand(brand);
                             }

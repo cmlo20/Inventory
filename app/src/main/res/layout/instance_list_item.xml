@@ -7,7 +7,7 @@
         <variable name="instance"
                   type="com.hku.lesinventory.model.Instance"/>
         <variable name="location"
-                  type="com.hku.lesinventory.model.Location"/>
+                  type="com.hku.lesinventory.model.Option"/>
         <variable name="callback"
                   type="com.hku.lesinventory.ui.InstanceClickCallback"/>
     </data>
